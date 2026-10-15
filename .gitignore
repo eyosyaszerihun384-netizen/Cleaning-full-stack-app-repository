@@ -25,9 +25,14 @@ lerna-debug.log*
 # Deployment
 .vercel/
 
+# Static client demo is maintained separately from this full-stack application.
+/github-pages-demo/
+/index.html
+/styles.css
+/script.js
+
 # TypeScript
 *.tsbuildinfo
-next-env.d.ts
 
 # OS/editor noise
 .DS_Store

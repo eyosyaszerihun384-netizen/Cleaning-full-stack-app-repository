@@ -1,6 +1,6 @@
 # Cleaning Service Full-Stack App
 
-Full-stack cleaning-services website built with Next.js, TypeScript, and Supabase. The product scope and implementation sequence are documented before application scaffolding begins.
+Full-stack cleaning-services website built with Next.js, TypeScript, and Supabase. The application foundation is in place; backend integration will be developed in slices.
 
 ## Project documents
 
@@ -13,7 +13,26 @@ Full-stack cleaning-services website built with Next.js, TypeScript, and Supabas
 
 ## Current status
 
-Planning is complete. The Next.js application has not been scaffolded yet. Start with Slice 0 and Slice 1 in `SYSTEM-DESIGN.md`.
+Slice 1 is complete: the Next.js App Router app and responsive demo-inspired home page are in place. Supabase, inquiry persistence, CMS, and staff authentication are not connected yet. See `DEVELOPMENT-STATUS.md` for the active checkpoint.
+
+## Local development
+
+Requirements: Node.js LTS and npm.
+
+```powershell
+npm install
+npm run dev
+```
+
+Open `http://localhost:3000`. Useful checks:
+
+```powershell
+npm run lint
+npm run typecheck
+npm run build
+```
+
+The current homepage is a development preview. The quote form intentionally does not collect or save information until the Supabase inquiry slice is implemented.
 
 ## Security
 

@@ -834,12 +834,12 @@ Each slice should be reviewed in the running app before moving on.
 ### You can do now
 
 1. **Supabase:** Sign in at Supabase, create a development project, select an appropriate U.S. region, and keep the database password private. Do not paste credentials into chat.
-2. **Repository:** Create a GitHub repo for the Next.js application (can be private while developing). The existing Pages demo is static; do not assume its repository is configured to run Next.js.
-3. **Development location:** Choose the folder/repository where you want the actual app. This current chat folder is not currently a Git repository, and Git was not available in the command environment when checked.
-4. **Install/confirm tooling locally:** Git, Node.js LTS, and a package manager (npm is the default recommendation). Check that `git --version` and `node --version` work in your terminal.
+2. **Repository:** A public GitHub repo for the Next.js app has been created and connected; the static Pages demo remains separate.
+3. **Development location:** The current chat workspace is the local project root and is connected to the full-stack repository.
+4. **Install/confirm tooling locally:** Git, Node.js, and npm are available in this environment. Check that `git --version`, `node --version`, and `npm --version` work in your terminal.
 5. **Business content:** Start gathering the business name/logo, city/state/ZIP areas, service descriptions, approved prices/estimate rules, contact email/phone, hours, photos, genuine testimonials/permissions, and service policies.
 6. **Operations choices:** Decide who needs admin access, whether staff require different roles, the inquiry retention period, preferred hosting, domain, and privacy-notice owner.
-7. **Keep secrets local:** When the app is scaffolded, copy the project URL and publishable/anon key into `.env.local`, not source files. The database password is not the frontend key and should stay private.
+7. **Keep secrets local:** Put the project URL and publishable key into ignored `.env.local`, not source files. The database password is not the frontend key and should stay private.
 
 ### Do not do yet
 
