@@ -1,105 +1,30 @@
 import FaqChat from "@/components/faq-chat";
-import MobileNavigation from "@/components/mobile-navigation";
+import InquiryForm from "@/components/inquiry-form";
+import ServiceCard from "@/components/service-card";
+import SiteFooter from "@/components/site-footer";
+import SiteHeader from "@/components/site-header";
+import { getPublishedFaqTree } from "@/lib/faq";
+import { getPublishedServices } from "@/lib/services";
+import { getPublicHomeCopy } from "@/lib/site-content";
 
-const services = [
-  {
-    number: "01",
-    title: "Residential cleaning",
-    description:
-      "Thoughtful cleaning for the place you call home. Service details will be confirmed with the business.",
-    icon: "home",
-    iconClass: "icon-home",
-  },
-  {
-    number: "02",
-    title: "Commercial cleaning",
-    description:
-      "A cleaner workplace, with scope and availability tailored to your business needs.",
-    icon: "commercial",
-    iconClass: "icon-key",
-  },
-  {
-    number: "03",
-    title: "Deep cleaning",
-    description:
-      "A more detailed refresh for the areas that need extra attention.",
-    icon: "sparkle",
-    iconClass: "icon-sparkle",
-  },
-  {
-    number: "04",
-    title: "Move-in cleaning",
-    description:
-      "A fresh start for your next space. Ask us about move-out service availability too.",
-    icon: "key",
-    iconClass: "icon-key",
-  },
-];
+export default async function Home() {
+  const [services, faqNodes, homeCopy] = await Promise.all([
+    getPublishedServices(),
+    getPublishedFaqTree(),
+    getPublicHomeCopy(),
+  ]);
 
-function ServiceIcon({ kind }: { kind: string }) {
-  if (kind === "home") {
-    return (
-      <svg viewBox="0 0 48 48" fill="none" aria-hidden="true">
-        <path d="m7 22 17-14 17 14v18H7V22Z" stroke="currentColor" strokeWidth="2.2" strokeLinejoin="round" />
-        <path d="M19 40V27h10v13" stroke="currentColor" strokeWidth="2.2" strokeLinejoin="round" />
-        <path d="M34 8h4v8" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" />
-      </svg>
-    );
-  }
-
-  if (kind === "sparkle") {
-    return (
-      <svg viewBox="0 0 48 48" fill="none" aria-hidden="true">
-        <path d="m23 5 4.4 13.6L41 23l-13.6 4.4L23 41l-4.4-13.6L5 23l13.6-4.4L23 5Z" stroke="currentColor" strokeWidth="2.2" strokeLinejoin="round" />
-        <path d="m38 32 1.8 5.2L45 39l-5.2 1.8L38 46l-1.8-5.2L31 39l5.2-1.8L38 32Z" fill="currentColor" />
-      </svg>
-    );
-  }
-
-  if (kind === "commercial") {
-    return (
-      <svg viewBox="0 0 48 48" fill="none" aria-hidden="true">
-        <path d="M8 40V14l16-7v33m0-22h16v22M5 40h38" stroke="currentColor" strokeWidth="2.2" strokeLinejoin="round" />
-        <path d="M14 18h3m-3 7h3m-3 7h3m13-7h3m-3 7h3" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" />
-      </svg>
-    );
-  }
-
-  return (
-    <svg viewBox="0 0 48 48" fill="none" aria-hidden="true">
-      <circle cx="17" cy="24" r="9" stroke="currentColor" strokeWidth="2.2" />
-      <path d="m24 30 14 14m-5-19 6 6m-12-1 6 6" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" />
-      <path d="M17 21v6m-3-3h6" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" />
-    </svg>
-  );
-}
-
-export default function Home() {
   return (
     <>
-      <header className="site-header">
-        <div className="container nav-wrap">
-          <a className="brand" href="#home" aria-label="BrightNest Cleaning home">
-            <span className="brand-mark" aria-hidden="true">
-              <svg viewBox="0 0 40 40" fill="none">
-                <path d="M6 18.5 20 7l14 11.5v14H6v-14Z" fill="currentColor" />
-                <path d="M15 32.5V22h10v10.5" stroke="#fff" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" />
-                <path d="m29 7 .8 2.2L32 10l-2.2.8L29 13l-.8-2.2L26 10l2.2-.8L29 7Z" fill="#F5AE69" />
-              </svg>
-            </span>
-            <span>brightnest<span className="brand-light">cleaning</span></span>
-          </a>
-          <MobileNavigation />
-        </div>
-      </header>
+      <SiteHeader />
 
       <main id="main">
         <section className="hero section" id="home">
           <div className="container hero-grid">
             <div className="hero-copy">
-              <div className="eyebrow"><span className="eyebrow-dot" /> A little more breathing room</div>
-              <h1>Come home to<br />a <span>brighter</span> kind<br />of clean.</h1>
-              <p className="hero-text">Thoughtful home cleaning that gives you back your time—and makes your space feel like your favorite place.</p>
+              <div className="eyebrow"><span className="eyebrow-dot" /> {homeCopy.eyebrow}</div>
+              <h1>{homeCopy.headline}</h1>
+              <p className="hero-text">{homeCopy.introduction}</p>
               <div className="hero-actions">
                 <a className="button button-dark" href="#quote">Get your free estimate <span aria-hidden="true">↗</span></a>
                 <a className="text-link" href="#services">Explore our services <span aria-hidden="true">→</span></a>
@@ -136,17 +61,17 @@ export default function Home() {
               <p>Whether you need a regular reset or a little extra care, we’ll help you find the right clean for your home or workplace.</p>
             </div>
             <div className="service-grid">
-              {services.map((service, index) => (
-                <article className={`service-card${index === 1 ? " featured-card" : ""}`} key={service.number}>
-                  <div className={`service-icon ${service.iconClass}`}>
-                    <ServiceIcon kind={service.icon} />
-                  </div>
-                  <span className="card-number">{service.number}</span>
-                  <h3>{service.title}</h3>
-                  <p>{service.description}</p>
-                  <a href="#quote" className="card-link">Request an estimate <span>↗</span></a>
-                </article>
-              ))}
+              {services.length > 0 ? (
+                services.map((service, index) => {
+                  return (
+                    <ServiceCard key={service.id} service={service} index={index} />
+                  );
+                })
+              ) : (
+                <p className="service-empty">
+                  Service details are being prepared. Please check back soon.
+                </p>
+              )}
             </div>
           </div>
         </section>
@@ -172,14 +97,10 @@ export default function Home() {
             <div className="quote-copy">
               <div className="eyebrow">Your fresh start is one hello away</div>
               <h2>Let’s find your<br /><span>kind of clean.</span></h2>
-              <p>We’re preparing the secure estimate request form. Once it’s connected, you’ll be able to share your needs and receive a follow-up from the team.</p>
-              <p className="demo-note">This development preview does not accept or store customer information.</p>
+              <p>Share a few details about what you’re looking for. The team will follow up to discuss your needs and confirm availability.</p>
+              <p className="demo-note">A request is not a confirmed appointment. This development preview is for test data only.</p>
             </div>
-            <div className="quote-form" aria-labelledby="estimate-heading">
-              <div className="form-heading"><h3 id="estimate-heading">Estimate requests are coming soon</h3><span>Secure form setup is next</span></div>
-              <p className="form-privacy">The form will be enabled after Supabase is configured and the inquiry workflow is tested. Please do not send real customer information to this preview.</p>
-              <a className="button button-dark submit-button" href="#services">Explore cleaning services <span aria-hidden="true">↗</span></a>
-            </div>
+            <InquiryForm services={services} />
           </div>
         </section>
 
@@ -188,16 +109,9 @@ export default function Home() {
         </section>
       </main>
 
-      <footer className="site-footer" id="contact">
-        <div className="container footer-main">
-          <a className="brand footer-brand" href="#home"><span className="brand-mark" aria-hidden="true"><svg viewBox="0 0 40 40" fill="none"><path d="M6 18.5 20 7l14 11.5v14H6v-14Z" fill="currentColor" /><path d="M15 32.5V22h10v10.5" stroke="#fff" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" /><path d="M29 7l.8 2.2L32 10l-2.2.8L29 13l-.8-2.2L26 10l2.2-.8L29 7Z" fill="#F5AE69" /></svg></span><span>brightnest<span className="brand-light">cleaning</span></span></a>
-          <p>A brighter kind of clean.<br />A demo concept for a U.S.-based service.</p>
-          <span className="footer-link">Business contact details will be added after confirmation.</span>
-        </div>
-        <div className="container footer-bottom"><span>© {new Date().getFullYear()} BrightNest Cleaning. Development preview.</span><span>Made with a little extra care <b>✳</b></span></div>
-      </footer>
+      <SiteFooter />
 
-      <FaqChat />
+      <FaqChat publishedNodes={faqNodes} />
     </>
   );
 }

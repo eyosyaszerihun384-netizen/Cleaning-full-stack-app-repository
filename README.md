@@ -13,7 +13,9 @@ Full-stack cleaning-services website built with Next.js, TypeScript, and Supabas
 
 ## Current status
 
-Slice 1 is complete: the Next.js App Router app and responsive demo-inspired home page are in place. Supabase, inquiry persistence, CMS, and staff authentication are not connected yet. See `DEVELOPMENT-STATUS.md` for the active checkpoint.
+The Next.js App Router site reads published public content from Supabase and includes a visitor inquiry form wired for server-side validation and Supabase submission. Staff sign-in and inquiry management are implemented; admin sign-in has been exercised, but no-role, inquiry-manager, and content-editor access checks remain. The CMS is under owner-led verification: service draft CRUD/privacy, homepage copy, contact settings, service-area publishing, and service-image upload/replacement have been exercised with synthetic or existing safe values. FAQ publication/visitor-flow checks and end-to-end visitor inquiry submission are still pending. See [DEVELOPMENT-STATUS.md](./DEVELOPMENT-STATUS.md) for exactly what was checked, remaining test data, and the resume point. This is still a development preview, not production-ready.
+
+The project concept and implementation decisions are captured in [PRD.md](./PRD.md), [PLAN.md](./PLAN.md), [SYSTEM-DESIGN.md](./SYSTEM-DESIGN.md), and [Design.md](./Design.md). Source repository: [Cleaning-full-stack-app-repository](https://github.com/eyosyaszerihun384-netizen/Cleaning-full-stack-app-repository). Keep `.env.local` and all real credentials local and ignored; GitHub contains only safe configuration templates.
 
 ## Local development
 
@@ -32,7 +34,147 @@ npm run typecheck
 npm run build
 ```
 
-The current homepage is a development preview. The quote form intentionally does not collect or save information until the Supabase inquiry slice is implemented.
+The homepage is a development preview. Use synthetic test details only; business-approved privacy/retention terms and production anti-abuse protections are still launch prerequisites.
+
+## Supabase development setup
+
+1. Create or select a **development** project in the Supabase dashboard. Choose an appropriate region and store the database password in a password manager.
+2. In the project's API settings, copy the **Project URL** and **publishable key** into `.env.local`:
+
+   ```powershell
+   Copy-Item .env.example .env.local
+   ```
+
+   Set `NEXT_PUBLIC_SUPABASE_URL` and `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` to those dashboard values. Do not use a secret/service-role key in either variable, and never paste credentials into chat.
+3. Confirm that `.env.local` is ignored by Git:
+
+   ```powershell
+   git check-ignore .env.local
+   ```
+
+4. To apply the version-controlled migrations to a new/empty development project, open a terminal in this folder and run:
+
+   ```powershell
+   npx supabase login
+   npx supabase link --project-ref YOUR_PROJECT_REF
+   npx supabase db push
+   ```
+
+   Find the project ref in the Supabase dashboard URL. The CLI may request credentials in your local terminal; do not share them. Do not run `db push` against a project with existing application data or schema until its state has been reviewed.
+5. Create the first Supabase Auth user in the dashboard:
+
+   - Open **Authentication** → **Users**.
+   - Choose **Add user** (the label can vary), and enter your own email address.
+   - Set a strong password and store it securely. Do not share it in chat.
+   - Confirm the new user appears in the user list before continuing.
+
+   Then open **SQL Editor**, create a new query, replace the example email with the exact email used for that Auth user, and run this query to grant the first admin role:
+
+   ```sql
+   insert into public.staff_roles (user_id, role)
+   select id, 'admin'::public.staff_role
+   from auth.users
+   where lower(email) = lower('owner@example.com')
+   on conflict (user_id) do update set role = excluded.role;
+   ```
+
+   Verify that exactly one expected user has the `admin` role before proceeding. Do not grant admin access to an unverified account. Staff sign in at `/admin/login`; only users with `admin` or `inquiry_manager` roles can access the inquiry dashboard. Do not enable public signup or grant an unverified account a staff role.
+
+   To verify the assignment, run this read-only query in SQL Editor after replacing the example email:
+
+   ```sql
+   select u.email, sr.role
+   from auth.users as u
+   join public.staff_roles as sr on sr.user_id = u.id
+   where lower(u.email) = lower('owner@example.com');
+   ```
+
+6. Verify the admin's database permissions without leaving test rows behind. In SQL Editor, replace the example email below and run the **entire script**. It temporarily sets the database role and JWT claims for the transaction, tests draft service and inquiry permissions, and rolls back all test writes at the end. Confirm the result shows `is_admin = true`, `role = admin`, and that each insert/select/update returns the marked test row. Do not run this script with real customer data.
+
+   ```sql
+   begin;
+
+   select set_config(
+     'request.jwt.claim.sub',
+     (select id::text from auth.users
+      where lower(email) = lower('owner@example.com')),
+     true
+   );
+   select set_config('request.jwt.claim.role', 'authenticated', true);
+   select set_config(
+     'request.jwt.claims',
+     jsonb_build_object(
+       'sub', (select id::text from auth.users
+               where lower(email) = lower('owner@example.com')),
+       'role', 'authenticated'
+     )::text,
+     true
+   );
+   set local role authenticated;
+
+   select auth.uid() as test_user_id,
+          private.has_staff_role(array['admin']::public.staff_role[]) as is_admin;
+   select role
+   from public.staff_roles
+   where user_id = auth.uid();
+
+   insert into public.services (
+     slug, category, title, summary, description, status
+   )
+   values (
+     'rls-admin-test-20261015',
+     'residential',
+     'RLS admin test - rollback',
+     'Synthetic permission test only.',
+     'Synthetic permission test only; this transaction will roll back.',
+     'draft'
+   )
+   returning slug, status;
+
+   select slug, status
+   from public.services
+   where slug = 'rls-admin-test-20261015';
+
+   update public.services
+   set summary = 'RLS admin update succeeded inside rollback test.'
+   where slug = 'rls-admin-test-20261015'
+   returning slug, summary;
+
+   insert into public.inquiries (
+     customer_name, email, message, privacy_notice_version
+   )
+   values (
+     'RLS admin test - rollback',
+     'slice2-admin-test@example.invalid',
+     'Synthetic permission test only; this transaction will roll back.',
+     'slice2-admin-test-only'
+   )
+   returning id, customer_name, status;
+
+   select id, customer_name, status
+   from public.inquiries
+   where email = 'slice2-admin-test@example.invalid';
+
+   update public.inquiries
+   set status = 'contacted',
+       staff_notes = 'Synthetic staff permission check; rolled back.'
+   where email = 'slice2-admin-test@example.invalid'
+   returning status, staff_notes;
+
+   rollback;
+   ```
+
+   If the owner email is misspelled or the account lacks the admin role, the checks should fail or report `is_admin = false`; stop and correct the role assignment before proceeding. The transaction is rolled back, so none of the test content or inquiry remains.
+
+Local Supabase emulation (`npx supabase start`) requires Docker Desktop or Podman. Neither is currently available in the development environment. Anonymous REST checks confirmed published services are visible, drafts and inquiries are not, service updates are denied, and anonymous inquiries cannot set staff-only fields. The owner/admin's transaction-based SQL check succeeded for inquiry management and rolled back its test records.
+
+Migration `202610150003_add_demo_services.sql` is applied to the linked development project and adds four clearly labeled demo service entries for the homepage. Replace or remove these entries and review all published copy before a production launch.
+
+The public homepage and `/services` listing read published service rows from Supabase. Each service has a detail route at `/services/[slug]`; draft/unknown slugs return 404. `/about` reads active service-area records, and `/contact` reads only explicitly public contact settings. The homepage estimate form validates submissions on the server and inserts only approved inquiry fields using the publishable Supabase client and existing RLS policy. Its end-to-end submission test is deferred. The form includes a basic honeypot; this is not robust rate limiting or CAPTCHA and is not sufficient by itself for a public production launch.
+
+Staff sign in at `/admin/login` using a provisioned Supabase Auth account. `/admin` and `/admin/inquiries/[id]` are limited to users with `admin` or `inquiry_manager` roles. `/admin/content` is for `admin` and `content_editor` roles. The app checks the session and role, and Supabase RLS remains the data-authorization boundary. There is no public registration page. Live sign-in, non-staff denial, and role-specific dashboard checks remain to be performed with owner-provisioned accounts.
+
+The CMS at `/admin/content` edits homepage hero copy, service descriptions, publication status, pricing labels, images, public contact details, service areas, and FAQ decision-tree nodes/options. FAQ changes stay draft until published. Publish FAQ leaf questions first, then their parent questions, and publish the root last; the app validates that a published tree has one reachable root, no loops, and valid links. Until a complete tree is published, the existing demo FAQ remains visible. Only admins can permanently delete a service, with an explicit confirmation; deletion removes its public route and attempts to remove its image, while existing inquiries keep their saved service-name snapshot but lose the live service relation. Uploaded media is restricted to JPEG, PNG, WebP, or AVIF files up to 5 MB; the server verifies file signatures before using the existing `site-media` bucket. Publishing content is still the owner's responsibility; enter only approved business details.
 
 ## Security
 

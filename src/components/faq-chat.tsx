@@ -1,12 +1,13 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import type { PublicFaqNode } from "@/lib/faq";
 
 type FaqOption = {
   label: string;
   answer: string;
   next?: string;
-  action?: "quote";
+  action?: "quote" | "contact" | "end";
 };
 
 type FaqNode = {
@@ -20,7 +21,7 @@ type ChatMessage = {
   from: "bot" | "user" | "thinking";
 };
 
-const faqTree: Record<string, FaqNode> = {
+const demoFaqTree: Record<string, FaqNode> = {
   main: {
     prompt: "What would you like to know about?",
     options: [
@@ -29,7 +30,7 @@ const faqTree: Record<string, FaqNode> = {
       { label: "Scheduling & booking", answer: "I can explain how an estimate request works and what happens next.", next: "booking" },
       { label: "Service area", answer: "The business location has not been confirmed yet. I can explain how to check availability.", next: "area" },
       { label: "Preparing for a clean", answer: "Let’s go over a few common preparation questions.", next: "preparation" },
-      { label: "Request an estimate", answer: "The estimate form is being connected in a later development step. This preview does not collect your information.", action: "quote" },
+      { label: "Request an estimate", answer: "Share a few details using the estimate request form. The team will follow up; a request is not an appointment.", action: "quote" },
     ],
   },
   services: {
@@ -46,7 +47,7 @@ const faqTree: Record<string, FaqNode> = {
     options: [
       { label: "What is included?", answer: "The final checklist is not confirmed yet. Ask which rooms, tasks, and optional extras are included in your estimate.", next: "home" },
       { label: "Can I request recurring visits?", answer: "You can share your preferred frequency with the team. Availability and schedules need to be confirmed.", next: "booking" },
-      { label: "Request an estimate", answer: "The estimate form is not connected yet; no customer information is collected in this preview.", action: "quote" },
+      { label: "Request an estimate", answer: "Use the estimate request form to share a few details. This development project is for synthetic test data only.", action: "quote" },
     ],
   },
   commercial: {
@@ -54,7 +55,7 @@ const faqTree: Record<string, FaqNode> = {
     options: [
       { label: "What businesses do you serve?", answer: "The commercial customer types have not been confirmed. The team can discuss your workplace and needs.", next: "commercial" },
       { label: "Can service be scheduled after hours?", answer: "Business hours and scheduling options are not set in this demo. Ask the team to confirm what they can accommodate.", next: "booking" },
-      { label: "How do I discuss a workplace?", answer: "A business inquiry form will be available after backend setup. For now, this preview does not collect submissions.", action: "quote" },
+      { label: "How do I discuss a workplace?", answer: "Use the estimate request form to tell the team about your workplace. A request is not an appointment.", action: "quote" },
     ],
   },
   deep: {
@@ -62,7 +63,7 @@ const faqTree: Record<string, FaqNode> = {
     options: [
       { label: "What areas are covered?", answer: "The deep-clean checklist has not been finalized. Confirm the included rooms, tasks, and any add-ons before booking.", next: "deep" },
       { label: "How long does it take?", answer: "Timing depends on property size, condition, and requested tasks. The team can estimate this after learning more.", next: "pricing" },
-      { label: "Can I request a quote?", answer: "The estimate form is not active in this development preview.", action: "quote" },
+      { label: "Can I request a quote?", answer: "You can use the estimate request form. This development project is for synthetic test data only.", action: "quote" },
     ],
   },
   move: {
@@ -70,7 +71,7 @@ const faqTree: Record<string, FaqNode> = {
     options: [
       { label: "What details should I share?", answer: "The property size, condition, target date, and any requested tasks help the team prepare an estimate.", next: "booking" },
       { label: "Are move-out cleans available?", answer: "Move-out service is not confirmed yet. The business should approve this option before it is advertised.", next: "services" },
-      { label: "Request an estimate", answer: "The estimate form is not active yet; this preview does not send or store information.", action: "quote" },
+      { label: "Request an estimate", answer: "Use the estimate request form to share your needs. A request is not a confirmed appointment.", action: "quote" },
     ],
   },
   pricing: {
@@ -79,7 +80,7 @@ const faqTree: Record<string, FaqNode> = {
       { label: "Is pricing per room?", answer: "No room-by-room prices are confirmed. Share your service and property details with the business for an accurate estimate.", next: "booking" },
       { label: "What affects an estimate?", answer: "Service type, property size and condition, location, and requested tasks may affect a quote. The business must confirm its pricing method.", next: "pricing" },
       { label: "Are estimates free?", answer: "The demo describes a free estimate, but the actual business estimate policy still needs confirmation.", next: "booking" },
-      { label: "Request an estimate", answer: "The estimate form is not connected yet, so no information is collected in this preview.", action: "quote" },
+      { label: "Request an estimate", answer: "Use the estimate request form to share a few details. This development project is for synthetic test data only.", action: "quote" },
     ],
   },
   booking: {
@@ -87,7 +88,7 @@ const faqTree: Record<string, FaqNode> = {
     options: [
       { label: "Does a request confirm a booking?", answer: "No. A request is not a confirmed appointment. The team must confirm service details and availability.", next: "booking" },
       { label: "Can I request a certain date?", answer: "You can share a preferred date with the team, but availability must be confirmed directly.", next: "booking" },
-      { label: "What happens after I submit?", answer: "Once the real form is connected, staff will review the inquiry and follow up. This preview does not transmit submissions.", next: "area" },
+      { label: "What happens after I submit?", answer: "Staff can review your request and follow up to discuss details and availability. This is not a confirmed appointment.", next: "area" },
     ],
   },
   area: {
@@ -104,7 +105,7 @@ const faqTree: Record<string, FaqNode> = {
       { label: "Should I tidy up first?", answer: "A quick pickup may help make surfaces easier to reach. Confirm preparation recommendations with the business.", next: "preparation" },
       { label: "Are supplies provided?", answer: "Supply and equipment arrangements are not confirmed yet. Ask the team what they provide.", next: "care" },
       { label: "What about pets?", answer: "Tell the business about pets and any instructions before a visit. Its safety and access procedures need confirmation.", next: "care" },
-      { label: "Share special instructions", answer: "The future form will include a notes field. Do not share access codes or sensitive details in this preview.", next: "booking" },
+      { label: "Share special instructions", answer: "Use the message field to share relevant cleaning details. Do not include access codes or sensitive information.", next: "booking" },
     ],
   },
   care: {
@@ -119,18 +120,40 @@ const faqTree: Record<string, FaqNode> = {
 
 const THINKING_DELAY_MS = 3000;
 
-export default function FaqChat() {
+export default function FaqChat({
+  publishedNodes,
+}: {
+  publishedNodes: PublicFaqNode[] | null;
+}) {
+  const faqTree: Record<string, FaqNode> = publishedNodes
+    ? Object.fromEntries(
+        publishedNodes.map((node) => [
+          node.id,
+          {
+            prompt: node.prompt,
+            options: node.options.map((option) => ({
+              label: option.label,
+              answer: option.answer,
+              ...(option.next_node_id ? { next: option.next_node_id } : {}),
+              ...(option.action ? { action: option.action } : {}),
+            })),
+          },
+        ]),
+      )
+    : demoFaqTree;
+  const rootNode =
+    publishedNodes?.find((node) => node.is_root)?.id ?? "main";
   const [isOpen, setIsOpen] = useState(false);
   const [isThinking, setIsThinking] = useState(false);
   const [messages, setMessages] = useState<ChatMessage[]>([]);
-  const [activeNode, setActiveNode] = useState("main");
+  const [activeNode, setActiveNode] = useState(rootNode);
   const nextMessageId = useRef(0);
   const thinkingTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const firstOption = useRef<HTMLButtonElement>(null);
   const launcher = useRef<HTMLButtonElement>(null);
   const chatLog = useRef<HTMLDivElement>(null);
 
-  const node = faqTree[activeNode] ?? faqTree.main;
+  const node = faqTree[activeNode] ?? faqTree[rootNode];
 
   function appendMessage(text: string, from: ChatMessage["from"]) {
     const id = nextMessageId.current++;
@@ -166,11 +189,17 @@ export default function FaqChat() {
       if (option.action === "quote") {
         setActiveNode("main");
         document.querySelector("#quote")?.scrollIntoView({ behavior: "smooth", block: "start" });
-      } else if (option.next && faqTree[option.next]) {
+      } else if (option.action === "contact") {
+        setActiveNode(rootNode);
+        window.location.assign("/contact");
+      } else if (
+        option.next &&
+        faqTree[option.next]
+      ) {
         setActiveNode(option.next);
         appendMessage(faqTree[option.next].prompt, "bot");
       } else {
-        setActiveNode("main");
+        setActiveNode(rootNode);
       }
 
       setIsThinking(false);
@@ -258,8 +287,8 @@ export default function FaqChat() {
               type="button"
               onClick={() => {
                 appendMessage("Main questions", "user");
-                appendMessage(faqTree.main.prompt, "bot");
-                setActiveNode("main");
+                appendMessage(faqTree[rootNode].prompt, "bot");
+                setActiveNode(rootNode);
               }}
             >
               ← Main questions

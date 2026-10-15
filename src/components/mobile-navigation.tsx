@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useState } from "react";
 
 export default function MobileNavigation() {
@@ -27,12 +28,13 @@ export default function MobileNavigation() {
         id="primary-nav"
         aria-label="Main navigation"
       >
-        <a href="#services" onClick={closeMenu}>Services</a>
-        <a href="#how-it-works" onClick={closeMenu}>How it works</a>
-        <a href="#about" onClick={closeMenu}>About us</a>
-        <a className="button button-small button-dark nav-cta" href="#quote" onClick={closeMenu}>
+        <Link href="/services" onClick={closeMenu}>Services</Link>
+        <Link href="/#how-it-works" onClick={closeMenu}>How it works</Link>
+        <Link href="/about" onClick={closeMenu}>About us</Link>
+        <Link href="/contact" onClick={closeMenu}>Contact</Link>
+        <Link className="button button-small button-dark nav-cta" href="/#quote" onClick={closeMenu}>
           Get a free estimate <span aria-hidden="true">↗</span>
-        </a>
+        </Link>
       </nav>
     </>
   );
