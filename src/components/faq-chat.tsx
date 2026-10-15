@@ -163,10 +163,7 @@ export default function FaqChat({
   function openChat() {
     setIsOpen(true);
     if (messages.length === 0) {
-      appendMessage(
-        "Hi there! I can help with cleaning services, estimates, scheduling, and more. What would you like to know about?",
-        "bot",
-      );
+      appendMessage(faqTree[rootNode].prompt, "bot");
     }
   }
 

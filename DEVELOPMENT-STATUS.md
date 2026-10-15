@@ -2,16 +2,16 @@
 
 **Last updated:** 2026-10-16
 **Project root:** Current Copilot chat workspace
-**Status:** Slices 1–3 implemented; Slice 4 inquiry workflow implemented with end-to-end submission verification deferred; Slice 5 staff login and inquiry dashboard implemented with role-matrix checks pending; Slice 6 CMS implemented and in live verification, with service, homepage, contact, service-area, and image workflows checked as an admin. FAQ publication/visitor-flow checks remain.
+**Status:** Slices 1–3 implemented. Slice 4 anonymous submission, public inquiry-read denial, staff follow-up/status history, malformed-email rejection, honeypot rejection, invalid-service rejection, and cleanup of test rows are verified. Slice 5 role-specific access and no-staff sign-in denial are verified. Slice 6 CMS service, homepage, contact, service-area, image, and synthetic FAQ workflows have been verified.
 
 ## Resume here
 
-- **Repository:** `https://github.com/eyosyaszerihun384-netizen/Cleaning-full-stack-app-repository` (`main`). The app source and recent implementation have been developed in this workspace; commit/push the current local work before treating GitHub as the complete checkpoint.
+- **Repository:** `https://github.com/eyosyaszerihun384-netizen/Cleaning-full-stack-app-repository` (`main`). Latest previously verified checkpoint is commit `b3538fe`; commit/push the current FAQ prompt fix and verification notes before treating GitHub as the complete checkpoint.
 - **Working stack:** Next.js App Router, TypeScript, Supabase Auth/Postgres/Storage; guided button-based FAQ only (no AI/LLM).
 - **Run locally:** use Node.js and npm, provide `NEXT_PUBLIC_SUPABASE_URL` and `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` in a private `.env.local`, then run `npm install` and `npm run dev`. Do not copy credentials into GitHub, documentation, or chat. Current owner preview uses `http://localhost:3000`.
 - **Verified in the current development project:** Admin login/CMS access; service draft create/edit/delete and public draft invisibility; homepage copy persistence/display; contact settings persistence/display; service-area create/edit, publish/display, then deactivate/hide; image upload and replacement on a synthetic draft. Lint, type-check, production build, and public route smoke checks pass.
 - **Synthetic CMS data intentionally remaining:** one inactive service-area row named `CMS Verification Test Updated, ZZ`. It is not published and should not be activated except for an explicitly approved test. The temporary image-test service was deleted; the outcome of deleting its Storage object was not independently inspected.
-- **Next:** verify FAQ editor publication order, graph validation, published visitor flow, and demo fallback; then verify content-editor/inquiry-manager/no-role authorization and complete the deferred anonymous inquiry submission test before final QA.
+- **Next:** review duplicate-submission behavior, exercise a genuine backend/network failure if practical, and complete final launch QA. The owner confirmed the no-staff account was denied sign-in; role-specific inquiry/content access and inquiry processing were also verified.
 - **Pre-launch blockers:** supply owner-approved business identity/content/pricing/coverage/privacy-retention details, complete access checks, confirm production hosting/domain and backup operations, then run production smoke tests. This is still a development preview, not production-ready.
 
 ## Current checkpoint
@@ -92,7 +92,15 @@
 - Added a honeypot as a basic spam deterrent. It is not rate limiting or CAPTCHA and does not protect the anonymous Supabase insert endpoint from direct automated requests.
 - The visible data-use notice is explicitly a development draft; business approval of privacy/retention terms and production-grade abuse protection remain launch prerequisites.
 
-**Deferred verification:** After the remaining feature slices, run one synthetic `.invalid` submission through the website, confirm it persists and is not readable anonymously, then delete that test row. The database's anonymous insert/read policies were tested separately in Slice 2. Do not use real customer details or count the form as fully verified yet.
+**Verified live:** From a signed-out browser session, submitted a synthetic request using `slice4-anon-verification-20261016@example.invalid`; the app displayed its success state. An anonymous REST read for that email returned HTTP 401, as expected. An earlier form attempt was made while the shared browser was signed in as the `content_editor` test account; it succeeded but is not counted as an anonymous submission.
+
+**Additional validation checks:** Invalid email displays its field error; an injected honeypot value is rejected with the generic failure message; and a forged, unavailable service UUID returns the service validation error. Follow-up database queries confirmed none of these invalid/honeypot tests created inquiry rows. Database/network outage behavior and repeated-submission semantics have not been exercised.
+
+**Verified with the inquiry manager:** The dashboard showed the anonymous test inquiry. Saved status `contacted` and a clearly synthetic staff note, reloaded the page to confirm both values persisted, and confirmed activity history records the status transition from `new` to `contacted`.
+
+**Cleanup complete:** With owner approval, deleted exactly the two synthetic Slice 4 inquiry rows: `slice4-verification-20261016@example.invalid` (authenticated content-editor attempt) and `slice4-anon-verification-20261016@example.invalid` (anonymous submission). Verified both exact email/name rows existed before deletion and the delete returned both rows. The separate older `slice5-admin-test@example.invalid` row was not changed.
+
+**Role-matrix verification complete:** The owner confirmed the no-staff account was denied sign-in with “This account does not have staff access.” The inquiry-manager and content-editor accounts have their respective restricted access. Direct route attempts from the no-staff account were not separately performed.
 
 ## Slice 5 — Staff authentication and inquiry dashboard (in progress)
 
@@ -105,7 +113,9 @@
 
 **Code and route checks:** `npm run lint`, `npm run typecheck`, `npm run build`, and `git diff --check` pass. A production HTTP smoke test confirmed `/admin/login` returns HTTP 200 and an unauthenticated `/admin` request redirects to `/admin/login`; its temporary server was stopped.
 
-**Verification still required:** With the owner-provisioned development Auth account, open a test inquiry, save a status/note update, and confirm the activity history. Then verify an account with no staff role is denied, an `inquiry_manager` can manage inquiries, and a `content_editor` cannot read or update them. No password or credentials were accessed here.
+**Owner-verified live role checks:** The owner created and signed in with separate `inquiry_manager` and `content_editor` accounts. The inquiry manager has inquiry access only; the content editor has content-management access. No passwords or credentials were shared.
+
+**Verification still required:** Confirm that the separate account with no staff role is denied access. With an authorized inquiry account, open a test inquiry, save a status/note update, and confirm the activity history. The anonymous end-to-end test inquiry submission remains deferred; then delete its synthetic row.
 
 ## Slice 6 — CMS, media, and FAQ editor (in progress)
 
@@ -125,6 +135,8 @@ The homepage copy save was also tested using the existing values without changin
 Existing public contact settings were saved without changing their values, persisted after reload, and matched the contact links on `/contact`. A clearly labeled synthetic service area was created and edited; its values persisted, and `/about` hid it while inactive. With owner approval, it was temporarily activated and appeared on `/about`; it was then deactivated, persisted as inactive, and disappeared from the public page. The synthetic record `CMS Verification Test Updated, ZZ` remains in the CMS as inactive. The CMS currently has no delete control for service areas.
 Uploaded a generated tiny PNG to a separate synthetic draft service, then replaced it with another; the updated alt text and image-present state persisted after reload, and the service remained unpublished. Replacement completed without a cleanup warning. The image-replacement action now reports a clear partial-success message if Supabase cannot remove the previous image. With owner approval, the image-test service was permanently deleted and is absent from the CMS. The delete action was subsequently updated to show a persistent success/cleanup-warning notice; both notice variants were tested. The actual storage-cleanup outcome for the already-deleted test image was not independently inspected.
 
-**Verification still required:** FAQ publication and visitor display, and admin/content-editor authorization. If desired, directly inspect Supabase Storage for any orphan left by the earlier image-test deletion, which occurred before the persistent cleanup-warning notice was added. No FAQ seed or unapproved real business copy is added; editors must enter approved content. Editor role/RLS checks remain in the Slice 5 checklist.
+**Verified with owner approval:** Created a synthetic FAQ root and leaf. Publishing the root before its child was rejected. Published the child first, then the root; verified the public chat showed the CMS root prompt and choices, navigated to the child, and displayed its predefined answer. Archived both test questions afterward and confirmed the demo FAQ fallback returned with the synthetic choices absent. The archived test nodes remain in the CMS because no FAQ-node delete control exists. Updated the chat so its opening message displays the active root prompt. `npm run lint`, `npm run typecheck`, and `npm run build` pass after this change.
 
-**Next action:** Continue Slice 6 verification with safe test data, then complete the remaining Slice 5 role checks and deferred Slice 4 submission verification before final QA.
+**Verification still required:** Admin/content-editor and inquiry-manager/no-staff authorization, plus the deferred anonymous inquiry submission and final cleanup checks. If desired, directly inspect Supabase Storage for any orphan left by the earlier image-test deletion, which occurred before the persistent cleanup-warning notice was added. The CMS contains archived synthetic FAQ test questions and one inactive synthetic test area; none are published. No approved business FAQ content has been supplied. Editor role/RLS checks remain in the Slice 5 checklist.
+
+**Next action:** Complete the remaining Slice 5 role checks and deferred Slice 4 submission verification before final QA.
