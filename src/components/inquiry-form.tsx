@@ -1,21 +1,49 @@
 "use client";
 
-import { useActionState } from "react";
+import { useActionState, useState } from "react";
 import { submitInquiry } from "@/app/actions";
 import type { InquiryActionState } from "@/lib/inquiry-action-state";
 import type { PublishedService } from "@/lib/services";
 
 const initialState: InquiryActionState = {};
 
+type InquiryFormValues = {
+  customer_name: string;
+  email: string;
+  phone: string;
+  city: string;
+  service_id: string;
+  message: string;
+  website: string;
+};
+
+const initialValues: InquiryFormValues = {
+  customer_name: "",
+  email: "",
+  phone: "",
+  city: "",
+  service_id: "",
+  message: "",
+  website: "",
+};
+
 type InquiryFormProps = {
   services: PublishedService[];
 };
 
 export default function InquiryForm({ services }: InquiryFormProps) {
+  const [values, setValues] = useState(initialValues);
   const [state, formAction, isPending] = useActionState(
     submitInquiry,
     initialState,
   );
+
+  function updateField<Field extends keyof InquiryFormValues>(
+    field: Field,
+    value: InquiryFormValues[Field],
+  ) {
+    setValues((current) => ({ ...current, [field]: value }));
+  }
 
   if (state.success) {
     return (
@@ -48,6 +76,10 @@ export default function InquiryForm({ services }: InquiryFormProps) {
               name="customer_name"
               required
               maxLength={160}
+              value={values.customer_name}
+              onChange={(event) =>
+                updateField("customer_name", event.currentTarget.value)
+              }
               aria-invalid={Boolean(fieldError("customer_name"))}
               aria-describedby={
                 fieldError("customer_name") ? "customer-name-error" : undefined
@@ -67,6 +99,8 @@ export default function InquiryForm({ services }: InquiryFormProps) {
               name="email"
               required
               maxLength={320}
+              value={values.email}
+              onChange={(event) => updateField("email", event.currentTarget.value)}
               aria-invalid={Boolean(fieldError("email"))}
               aria-describedby={fieldError("email") ? "email-error" : undefined}
             />
@@ -85,6 +119,8 @@ export default function InquiryForm({ services }: InquiryFormProps) {
               type="tel"
               name="phone"
               maxLength={40}
+              value={values.phone}
+              onChange={(event) => updateField("phone", event.currentTarget.value)}
               aria-invalid={Boolean(fieldError("phone"))}
               aria-describedby={fieldError("phone") ? "phone-error" : undefined}
             />
@@ -100,6 +136,8 @@ export default function InquiryForm({ services }: InquiryFormProps) {
               autoComplete="address-level2"
               name="city"
               maxLength={120}
+              value={values.city}
+              onChange={(event) => updateField("city", event.currentTarget.value)}
               aria-invalid={Boolean(fieldError("city"))}
               aria-describedby={fieldError("city") ? "city-error" : undefined}
             />
@@ -114,7 +152,10 @@ export default function InquiryForm({ services }: InquiryFormProps) {
           Service <span className="optional">(optional)</span>
           <select
             name="service_id"
-            defaultValue=""
+            value={values.service_id}
+            onChange={(event) =>
+              updateField("service_id", event.currentTarget.value)
+            }
             aria-invalid={Boolean(fieldError("service_id"))}
             aria-describedby={
               fieldError("service_id") ? "service-error" : undefined
@@ -140,6 +181,8 @@ export default function InquiryForm({ services }: InquiryFormProps) {
             name="message"
             rows={4}
             maxLength={4000}
+            value={values.message}
+            onChange={(event) => updateField("message", event.currentTarget.value)}
             aria-invalid={Boolean(fieldError("message"))}
             aria-describedby={
               fieldError("message") ? "message-error" : undefined
@@ -157,6 +200,8 @@ export default function InquiryForm({ services }: InquiryFormProps) {
             name="website"
             tabIndex={-1}
             autoComplete="off"
+            value={values.website}
+            onChange={(event) => updateField("website", event.currentTarget.value)}
           />
         </label>
         <button

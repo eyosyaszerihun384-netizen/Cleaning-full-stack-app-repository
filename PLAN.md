@@ -97,9 +97,10 @@ The proposal's target is 2–3 weeks. The schedule below follows that target and
 - [ ] Clean install and local startup work with the documented environment variables.
 - [ ] Type-check, lint, automated tests, and production build pass.
 - [ ] All approved public routes render at mobile and desktop widths.
-- [ ] Invalid inquiry data is rejected; failed persistence never produces a success message.
-- [ ] Public visitors cannot read inquiries or access administrative operations.
-- [ ] Authorized staff can edit content and update inquiry status.
+- [x] Invalid inquiry data is rejected; failed persistence never produces a success message.
+- [x] Repeat submissions from the same email within the 10-minute window are rejected without duplicate inquiry rows.
+- [x] Public visitors cannot read inquiries or access administrative operations.
+- [x] Authorized staff can edit content and update inquiry status.
 - [ ] FAQ button flows, back/restart behavior, and fallback are tested.
 - [ ] No chatbot LLM credentials, API calls, or AI dependencies are present.
 - [ ] Production secrets are configured outside source control.

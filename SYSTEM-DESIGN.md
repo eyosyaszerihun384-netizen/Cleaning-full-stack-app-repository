@@ -333,6 +333,8 @@ Keep the form short enough to complete, show progress, and let visitors go back 
 - Provide edit/back navigation.
 - State that this is an estimate/service inquiry and the team must confirm price, coverage, and schedule.
 - Disable duplicate submission while pending; preserve values on failure.
+- Reject another inquiry from the same normalized email within 10 minutes using a database trigger, including concurrent and direct API submissions.
+- Reject another inquiry from the same normalized email within 10 minutes using a database trigger, including concurrent and direct API submissions.
 
 If a multi-step flow creates friction in usability testing, retain the fields but present a compact single-page form; the core requirement is a manageable validated request form.
 
@@ -768,7 +770,7 @@ Each slice should be reviewed in the running app before moving on.
 
 **Exit checks:** Migrations apply from a clean database; public reads only show published content; private tables are not exposed.
 
-**Current checkpoint:** Migrations `202610150001` through `202610150003` are applied to the linked development project. Anonymous API checks confirmed published-service SELECT returns four rows while draft-service SELECT returns zero, inquiry SELECT is denied, service UPDATE is denied, and a valid synthetic inquiry is accepted only with permitted fields. The admin transaction test confirmed the owner has the `admin` role and can manage an inquiry; the test update returned its marked row, and follow-up counts confirmed all test rows were rolled back/deleted. Editor and inquiry-manager role matrices remain for their future workflows. App-owned `SECURITY DEFINER` functions have been moved out of the exposed API schema. The advisor's remaining `public.rls_auto_enable()` finding is a PostgreSQL event-trigger helper that enables RLS on newly created `public` tables, not an application RPC; leave it unchanged. Docker/Podman are unavailable locally.
+**Current checkpoint:** Migrations `202610150001` through `202610150003` and `202610160001` are applied to the linked development project. Anonymous API checks confirmed published-service SELECT returns four rows while draft-service SELECT returns zero, inquiry SELECT is denied, service UPDATE is denied, and a valid synthetic inquiry is accepted only with permitted fields. The admin transaction test confirmed the owner has the `admin` role and can manage an inquiry; the test update returned its marked row, and follow-up counts confirmed test rows were rolled back/deleted. Inquiry-manager/content-editor access and no-staff sign-in denial were subsequently verified in Slices 4–5. App-owned `SECURITY DEFINER` functions have been moved out of the exposed API schema. The advisor's remaining `public.rls_auto_enable()` finding is a PostgreSQL event-trigger helper that enables RLS on newly created `public` tables, not an application RPC; leave it unchanged. Docker/Podman are unavailable locally.
 
 ### Slice 3 — Services, About, Contact, and public content
 
@@ -786,7 +788,7 @@ Each slice should be reviewed in the running app before moving on.
 
 **Outcome:** A real customer request is persisted and can only be viewed by staff.
 
-**Current checkpoint:** The homepage estimate form and server action are implemented with server-side validation, honeypot, explicit success/error handling, and insertion through the publishable Supabase client under the anonymous-insert RLS policy. A signed-out synthetic browser submission returned success; anonymous REST SELECT for that test inquiry returned HTTP 401. Invalid email, honeypot, and forged service UUID tests were rejected without inserting rows. The inquiry manager confirmed staff visibility, saved a status/note update, and verified the status activity after reload. With owner approval, both Slice 4 synthetic test rows were deleted. Backend/network failure and repeated-submission behavior remain for final QA. The honeypot alone is not production-grade abuse prevention.
+**Current checkpoint:** The homepage estimate form and server action use server-side validation, a honeypot, explicit success/error states, and the publishable Supabase client under the anonymous-insert RLS policy. A signed-out synthetic submission succeeded; anonymous inquiry SELECT returned HTTP 401. Invalid email, honeypot, and forged service UUIDs were rejected without writes. A database trigger and email/created-time index reject a repeat from the same normalized email within 10 minutes, including simultaneous direct API requests. The app displays a specific cooldown message, allows a retry after the window, and preserves entered fields on save failure. Concurrent requests returned exactly one success and one duplicate rejection. An isolated HTTP 503 test produced a generic failure state and no success; the pending button was disabled. Staff visibility, status/note update, and history were confirmed; all Slice 4 synthetic inquiry rows used for these checks were deleted. Remaining limitations include no IP-based rate limit/CAPTCHA and no production-provider outage/availability guarantee.
 
 - Agree form fields and privacy text; implement multi-step UX and server-side schema validation.
 - Add server route/action, abuse controls, database insert policy, and success/error behavior.

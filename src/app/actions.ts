@@ -89,6 +89,13 @@ export async function submitInquiry(
   });
 
   if (error) {
+    if (error.code === "P0001" && error.message === "recent_inquiry_duplicate") {
+      return {
+        message:
+          "We recently received a request from this email address. Please wait 10 minutes before sending another.",
+      };
+    }
+
     console.error("Unable to save an inquiry.", { code: error.code });
     return {
       message:

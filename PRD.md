@@ -80,6 +80,7 @@ The proposal says “5 custom pages” but separately describes several service 
 - Validate input on the server as well as in the browser.
 - Store successful submissions in Supabase and show a clear confirmation to the visitor.
 - Provide an understandable error state if submission fails; do not indicate success unless the inquiry was stored.
+- Prevent repeat inquiries using the same normalized email within a 10-minute window, enforced in the database so concurrent or direct API submissions cannot bypass the form.
 - Do not promise a confirmed appointment: the form creates an inquiry for staff follow-up.
 
 **Acceptance criteria**
@@ -87,6 +88,7 @@ The proposal says “5 custom pages” but separately describes several service 
 - Valid inquiries are persisted and visible to authorized staff.
 - Invalid submissions are rejected with actionable field feedback.
 - Visitors receive confirmation only after a successful save.
+- Repeat submissions from the same email within 10 minutes are rejected without creating an extra inquiry.
 - Public users cannot read other customers' inquiry records.
 
 ### 6.3 FAQ button chatbot — Option A

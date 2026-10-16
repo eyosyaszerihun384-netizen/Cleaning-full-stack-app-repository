@@ -2,7 +2,7 @@
 
 **Last updated:** 2026-10-16
 **Project root:** Current Copilot chat workspace
-**Status:** Slices 1–3 implemented. Slice 4 anonymous submission, public inquiry-read denial, staff follow-up/status history, malformed-email rejection, honeypot rejection, invalid-service rejection, and cleanup of test rows are verified. Slice 5 role-specific access and no-staff sign-in denial are verified. Slice 6 CMS service, homepage, contact, service-area, image, and synthetic FAQ workflows have been verified.
+**Status:** Slices 1–6 are implemented. Slice 4 anonymous submission, public inquiry-read denial, staff follow-up/history, malformed-input and honeypot rejection, same-email 10-minute duplicate protection, concurrency handling, cooldown expiry, and failed-backend behavior are verified. Slice 5 role-specific access and no-staff sign-in denial are verified. Slice 6 CMS service, homepage, contact, service-area, image, and synthetic FAQ workflows have been verified.
 
 ## Resume here
 
@@ -11,8 +11,8 @@
 - **Run locally:** use Node.js and npm, provide `NEXT_PUBLIC_SUPABASE_URL` and `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` in a private `.env.local`, then run `npm install` and `npm run dev`. Do not copy credentials into GitHub, documentation, or chat. Current owner preview uses `http://localhost:3000`.
 - **Verified in the current development project:** Admin login/CMS access; service draft create/edit/delete and public draft invisibility; homepage copy persistence/display; contact settings persistence/display; service-area create/edit, publish/display, then deactivate/hide; image upload and replacement on a synthetic draft. Lint, type-check, production build, and public route smoke checks pass.
 - **Synthetic CMS data intentionally remaining:** one inactive service-area row named `CMS Verification Test Updated, ZZ`. It is not published and should not be activated except for an explicitly approved test. The temporary image-test service was deleted; the outcome of deleting its Storage object was not independently inspected.
-- **Next:** review duplicate-submission behavior, exercise a genuine backend/network failure if practical, and complete final launch QA. The owner confirmed the no-staff account was denied sign-in; role-specific inquiry/content access and inquiry processing were also verified.
-- **Pre-launch blockers:** supply owner-approved business identity/content/pricing/coverage/privacy-retention details, complete access checks, confirm production hosting/domain and backup operations, then run production smoke tests. This is still a development preview, not production-ready.
+- **Next:** all planned Slice 4 behavior is verified. Remaining work is final launch QA and production setup; duplicate-protection test inquiries have been removed.
+- **Pre-launch blockers:** supply owner-approved business identity/content/pricing/coverage/privacy-retention details, finalize inquiry-field/privacy wording, confirm production hosting/domain and backup operations, then run production smoke tests. This is still a development preview, not production-ready.
 
 ## Current checkpoint
 
@@ -25,7 +25,7 @@
 - Static demo: `index.html`, `styles.css`, and `script.js`
 - Next.js app: `src/app/page.tsx`, `src/app/layout.tsx`, and `src/components/`
 - Dependency audit: 0 reported vulnerabilities after replacing the generated Next-specific ESLint preset.
-- Supabase SSR/browser clients, generated database types, and three version-controlled schema/content migrations are present locally.
+- Supabase SSR/browser clients, generated database types, and four version-controlled schema/content migrations are present locally.
 
 ## Repository and tooling
 
@@ -63,18 +63,19 @@
 - Set the Supabase CLI project ID to a stable app slug and disabled automatic seed-file loading.
 - Documented remote development-project setup, migration application, and first-admin provisioning in `README.md`.
 - Confirmed the initial migration is applied to the linked Supabase project and generated TypeScript database definitions from its live schema; both Supabase clients now use those types.
-- Applied all three migrations to the linked Supabase project; `npx supabase migration list --linked` confirms local and remote versions `202610150001`, `202610150002`, and `202610150003` match.
+- Applied all four migrations to the linked Supabase project; `npx supabase migration list --linked` confirms local and remote versions `202610150001`, `202610150002`, `202610150003`, and `202610160001` match.
+- Added and applied migration `202610160001_prevent_recent_duplicate_inquiries.sql`. The database now rejects repeat inquiries with the same normalized email within 10 minutes, serializing concurrent inserts; the Next.js action presents a specific wait-and-retry message.
 - The security advisor no longer flags the app-owned `has_staff_role` and `record_inquiry_event` functions after they were moved to the non-exposed `private` schema. It still flags `public.rls_auto_enable()` as executable by `anon` and `authenticated`. Its definition shows a `SECURITY DEFINER` PostgreSQL event-trigger helper that automatically enables RLS for newly created tables in `public`; it is not an app RPC or business function. Leave it unchanged.
 
 **Anonymous API checks:** Published-service SELECT returned HTTP 200 with four demo rows; draft-service SELECT returned HTTP 200 with zero rows. Anonymous SELECT from inquiries returned HTTP 401. Anonymous PATCH to services returned HTTP 401. A synthetic inquiry with reserved `.invalid` email was accepted with HTTP 201; anonymous SELECT of that inquiry returned HTTP 401; an insert attempting to set `status` and `staff_notes` was rejected with HTTP 401.
 
-**Authenticated admin check:** The owner verified `assigned_role = admin` and zero remaining rows for both rollback-test records and the earlier anonymous synthetic inquiry. The transaction SQL returned the expected inquiry status/note when testing the admin update policy. This confirms the transaction's synthetic tests were rolled back and the inquiry update policy worked for the admin role. Editor and inquiry-manager role matrices are not yet tested and belong with staff authentication/CMS implementation.
+**Authenticated admin check:** The owner verified `assigned_role = admin` and zero remaining rows for both rollback-test records and the earlier anonymous synthetic inquiry. The transaction SQL returned the expected inquiry status/note when testing the admin update policy. This confirms the transaction's synthetic tests were rolled back and the inquiry update policy worked for the admin role. Separate inquiry-manager/content-editor permissions and no-staff sign-in denial were subsequently verified in Slice 5.
 
-**Exit checks:** Migrations apply and are recorded on the linked development project; anonymous access returns only published services; anonymous inquiry SELECT and content UPDATE are denied; anonymous inquiry INSERT is restricted to allowed fields; authenticated admin inquiry management works; all test data was rolled back/deleted. `rls_auto_enable()` is a PostgreSQL event-trigger helper and is left unchanged.
+**Exit checks:** Migrations apply and are recorded on the linked development project; anonymous access returns only published services; anonymous inquiry SELECT and content UPDATE are denied; anonymous inquiry INSERT is restricted to allowed fields; authenticated admin inquiry management works; rollback-test rows were rolled back/deleted. Slice 4 synthetic rows were separately removed after verification. `rls_auto_enable()` is a PostgreSQL event-trigger helper and is left unchanged.
 
 **Validation:** `npm run lint`, `npm run typecheck`, `npm run build`, `npm audit` (0 vulnerabilities), `git diff --check`, anonymous REST permission tests, authenticated admin transaction test, and homepage HTTP smoke test pass. `.env.local` remains ignored by Git. Local Supabase is unavailable because Docker/Podman are not installed.
 
-## Slice 3 — Public content integration (in progress)
+## Slice 3 — Public content integration (complete)
 
 - Replaced hard-coded homepage service cards with a server-side query for published Supabase services; query errors are explicit and an empty result shows a clear preparation message.
 - Added `/services` and `/services/[slug]` routes backed by the same published-service query, including details, optional inclusion/exclusion lists, clear pricing/availability caveat, and 404 for unpublished or unknown slugs.
@@ -84,25 +85,27 @@
 - Verified an anonymous REST request returns all four published services and local production-build HTTP smoke tests return HTTP 200 for the homepage, listing, detail, About, and Contact routes; unknown service routes return HTTP 404.
 - Local production preview at `http://localhost:3100` was stopped at the user's request.
 
-## Slice 4 — Visitor inquiry submission (in progress)
+## Slice 4 — Visitor inquiry submission (complete)
 
 - Replaced the inactive estimate placeholder with a provisional form for name and email (required), plus optional phone, city, service, and message; stakeholder approval of the exact fields is still pending.
 - Added server-side Zod validation, published-service validation, and an insert limited to visitor-provided inquiry fields; staff-only status/notes are not accepted from the form.
 - Added field-level validation feedback, pending/error/success states, and clear language that a request is not an appointment.
-- Added a honeypot as a basic spam deterrent. It is not rate limiting or CAPTCHA and does not protect the anonymous Supabase insert endpoint from direct automated requests.
+- Added a honeypot as a basic spam deterrent. It is not rate limiting or CAPTCHA. Added a database trigger that rejects another inquiry from the same normalized email within 10 minutes; this protects direct API submissions and concurrent requests, but is not a substitute for IP-based rate limits or CAPTCHA.
 - The visible data-use notice is explicitly a development draft; business approval of privacy/retention terms and production-grade abuse protection remain launch prerequisites.
 
 **Verified live:** From a signed-out browser session, submitted a synthetic request using `slice4-anon-verification-20261016@example.invalid`; the app displayed its success state. An anonymous REST read for that email returned HTTP 401, as expected. An earlier form attempt was made while the shared browser was signed in as the `content_editor` test account; it succeeded but is not counted as an anonymous submission.
 
-**Additional validation checks:** Invalid email displays its field error; an injected honeypot value is rejected with the generic failure message; and a forged, unavailable service UUID returns the service validation error. Follow-up database queries confirmed none of these invalid/honeypot tests created inquiry rows. Database/network outage behavior and repeated-submission semantics have not been exercised.
+**Additional validation checks:** Invalid email displays its field error; an injected honeypot value is rejected with the generic failure message; and a forged, unavailable service UUID returns the service validation error. Follow-up database queries confirmed none of these tests created inquiry rows.
+
+**Duplicate and backend-failure verification:** Applied `202610160001_prevent_recent_duplicate_inquiries.sql` to the linked development project. The public form's first synthetic submission succeeded; a repeat from the same email returned the explicit 10-minute wait message. Two simultaneous anonymous REST inserts for one test email returned exactly one HTTP 201 and one HTTP 400 / `P0001` duplicate error. After backdating only the synthetic test row to 11 minutes old, the same email was accepted again, confirming the cooldown expires; all three duplicate/concurrency test rows were then removed and a count query returned zero. An isolated local app and fault-injection proxy returned HTTP 503 for inquiry writes: the visitor saw the generic save-failure message, no success state, and all entered fields remained populated. The submit button displayed its disabled pending state during the delayed request. Outage-test requests were not forwarded to Supabase and created no rows.
 
 **Verified with the inquiry manager:** The dashboard showed the anonymous test inquiry. Saved status `contacted` and a clearly synthetic staff note, reloaded the page to confirm both values persisted, and confirmed activity history records the status transition from `new` to `contacted`.
 
-**Cleanup complete:** With owner approval, deleted exactly the two synthetic Slice 4 inquiry rows: `slice4-verification-20261016@example.invalid` (authenticated content-editor attempt) and `slice4-anon-verification-20261016@example.invalid` (anonymous submission). Verified both exact email/name rows existed before deletion and the delete returned both rows. The separate older `slice5-admin-test@example.invalid` row was not changed.
+**Cleanup complete:** With owner approval, deleted the five synthetic Slice 4 inquiries used for the form, role, duplicate, and concurrency checks; exact row checks returned zero afterward. The separate older `slice5-admin-test@example.invalid` row was not changed.
 
 **Role-matrix verification complete:** The owner confirmed the no-staff account was denied sign-in with “This account does not have staff access.” The inquiry-manager and content-editor accounts have their respective restricted access. Direct route attempts from the no-staff account were not separately performed.
 
-## Slice 5 — Staff authentication and inquiry dashboard (in progress)
+## Slice 5 — Staff authentication and inquiry dashboard (complete)
 
 - Added the `/admin/login` Supabase Auth password sign-in flow; there is no public account registration.
 - Added Next.js `proxy.ts` session refresh for staff routes and server-side session plus `staff_roles` checks for protected pages and mutations.
@@ -115,9 +118,9 @@
 
 **Owner-verified live role checks:** The owner created and signed in with separate `inquiry_manager` and `content_editor` accounts. The inquiry manager has inquiry access only; the content editor has content-management access. No passwords or credentials were shared.
 
-**Verification still required:** Confirm that the separate account with no staff role is denied access. With an authorized inquiry account, open a test inquiry, save a status/note update, and confirm the activity history. The anonymous end-to-end test inquiry submission remains deferred; then delete its synthetic row.
+**Verification complete:** Owner confirmed no-staff sign-in is denied, while inquiry-manager and content-editor accounts have their respective access. The anonymous inquiry submission and persisted staff status/note/history flow are verified in Slice 4.
 
-## Slice 6 — CMS, media, and FAQ editor (in progress)
+## Slice 6 — CMS, media, and FAQ editor (verified; approved production content remains)
 
 - Added `/admin/content` protected for `admin` and `content_editor` roles, with a content link for admins and a role-aware post-login redirect for editors.
 - Added a validated, plain-text homepage hero-copy editor backed by public `site_settings`; the homepage uses safe default copy until an approved CMS value is saved.
