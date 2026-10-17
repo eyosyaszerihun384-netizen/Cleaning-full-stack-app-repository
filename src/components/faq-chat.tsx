@@ -184,7 +184,7 @@ export default function FaqChat({
       appendMessage(option.answer, "bot");
 
       if (option.action === "quote") {
-        setActiveNode("main");
+        setActiveNode(rootNode);
         document.querySelector("#quote")?.scrollIntoView({ behavior: "smooth", block: "start" });
       } else if (option.action === "contact") {
         setActiveNode(rootNode);
@@ -277,7 +277,7 @@ export default function FaqChat({
               {option.label}
             </button>
           ))}
-          {activeNode !== "main" && (
+          {activeNode !== rootNode && (
             <button
               className="chat-option chat-option-back"
               disabled={isThinking}

@@ -6,12 +6,12 @@
 
 ## Resume here
 
-- **Repository:** `https://github.com/eyosyaszerihun384-netizen/Cleaning-full-stack-app-repository` (`main`). The latest local commits include the FAQ root-prompt fix and updated verification results; push the current branch to sync GitHub.
+- **Repository:** `https://github.com/eyosyaszerihun384-netizen/Cleaning-full-stack-app-repository` (`main`). GitHub is synced through commit `547d748` (`feat: prevent recent duplicate inquiries`).
 - **Working stack:** Next.js App Router, TypeScript, Supabase Auth/Postgres/Storage; guided button-based FAQ only (no AI/LLM).
 - **Run locally:** use Node.js and npm, provide `NEXT_PUBLIC_SUPABASE_URL` and `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` in a private `.env.local`, then run `npm install` and `npm run dev`. Do not copy credentials into GitHub, documentation, or chat. Current owner preview uses `http://localhost:3000`.
 - **Verified in the current development project:** Admin login/CMS access; service draft create/edit/delete and public draft invisibility; homepage copy persistence/display; contact settings persistence/display; service-area create/edit, publish/display, then deactivate/hide; image upload and replacement on a synthetic draft. Lint, type-check, production build, and public route smoke checks pass.
 - **Synthetic CMS data intentionally remaining:** one inactive service-area row named `CMS Verification Test Updated, ZZ`. It is not published and should not be activated except for an explicitly approved test. The temporary image-test service was deleted; the outcome of deleting its Storage object was not independently inspected.
-- **Next:** all planned Slice 4 behavior is verified. Remaining work is final launch QA and production setup; duplicate-protection test inquiries have been removed.
+- **Next:** continue launch-readiness QA. Fixes and local validation can proceed, but real business copy/privacy terms and production hosting/backup choices require owner input before launch.
 - **Pre-launch blockers:** supply owner-approved business identity/content/pricing/coverage/privacy-retention details, finalize inquiry-field/privacy wording, confirm production hosting/domain and backup operations, then run production smoke tests. This is still a development preview, not production-ready.
 
 ## Current checkpoint
@@ -140,6 +140,4 @@ Uploaded a generated tiny PNG to a separate synthetic draft service, then replac
 
 **Verified with owner approval:** Created a synthetic FAQ root and leaf. Publishing the root before its child was rejected. Published the child first, then the root; verified the public chat showed the CMS root prompt and choices, navigated to the child, and displayed its predefined answer. Archived both test questions afterward and confirmed the demo FAQ fallback returned with the synthetic choices absent. The archived test nodes remain in the CMS because no FAQ-node delete control exists. Updated the chat so its opening message displays the active root prompt. `npm run lint`, `npm run typecheck`, and `npm run build` pass after this change.
 
-**Verification still required:** Admin/content-editor and inquiry-manager/no-staff authorization, plus the deferred anonymous inquiry submission and final cleanup checks. If desired, directly inspect Supabase Storage for any orphan left by the earlier image-test deletion, which occurred before the persistent cleanup-warning notice was added. The CMS contains archived synthetic FAQ test questions and one inactive synthetic test area; none are published. No approved business FAQ content has been supplied. Editor role/RLS checks remain in the Slice 5 checklist.
-
-**Next action:** Complete the remaining Slice 5 role checks and deferred Slice 4 submission verification before final QA.
+**Verification still required:** Review the remaining FAQ navigation and accessibility paths; inspect Supabase Storage for any orphan left by the earlier image-test deletion, which occurred before the persistent cleanup-warning notice was added. The CMS contains archived synthetic FAQ test questions and one inactive synthetic test area; none are published. No approved business FAQ content has been supplied.
