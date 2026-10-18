@@ -36,6 +36,21 @@ npm run build
 
 The homepage is a development preview. Use synthetic test details only; business-approved privacy/retention terms and production anti-abuse protections are still launch prerequisites.
 
+## Production operations checklist
+
+Do not use the development Supabase project for customer data. Before launch:
+
+1. Create production hosting and Supabase projects owned by the business; restrict production dashboard and GitHub access to named maintainers.
+2. Configure only the public Supabase URL/publishable key for the app and keep any server secrets in the hosting provider's encrypted environment settings. Set production Supabase Auth site URL, allowed redirect URLs, email delivery, and recovery flows.
+3. Apply the reviewed migrations to production and verify inquiry RLS, staff-role boundaries, Storage upload restrictions, and anonymous access using non-owner test accounts.
+4. Configure provider-backed inquiry abuse controls after choosing the hosting platform. Do not rely on process-local memory in a horizontally scaled/serverless deployment; keep the email cooldown as an additional database safeguard.
+5. Choose a backup plan that matches the Supabase plan and the business's recovery requirements. Name the backup owner, record frequency/retention, and rehearse restoring the database and uploaded media into a separate project.
+6. Configure platform error reporting and uptime alerts without logging inquiry contents, credentials, auth tokens, or personal information. Assign an on-call contact and document the provider support/escalation path.
+7. Create individual staff accounts with least-privilege roles, test sign-in, sign-out, password recovery, and access removal, then securely hand account ownership and recovery contacts to the business.
+8. Run production smoke tests for public pages, inquiry success/error, duplicate rejection, staff login/roles, CMS publishing, FAQ flows, uploads, mobile layout, and backup/alert configuration. Remove all synthetic test records afterward.
+
+Deployment approval requires the business owner to accept operational ownership of hosting, Supabase, backups, staff access, and customer inquiry follow-up. Never put customer inquiries into CI or test data.
+
 ## Supabase development setup
 
 1. Create or select a **development** project in the Supabase dashboard. Choose an appropriate region and store the database password in a password manager.

@@ -94,17 +94,17 @@ The proposal's target is 2–3 weeks. The schedule below follows that target and
 
 ## Validation checklist
 
-- [ ] Clean install and local startup work with the documented environment variables.
-- [ ] Type-check, lint, automated tests, and production build pass.
-- [ ] All approved public routes render at mobile and desktop widths.
+- [x] Clean install and local startup work with the documented environment variables.
+- [x] Type-check, lint, automated tests, and production build pass locally; GitHub Actions is configured and awaits its first remote run.
+- [x] Current public routes render at 375px and 1440px; owner-approved final routes still require confirmation.
 - [x] Invalid inquiry data is rejected; failed persistence never produces a success message.
 - [x] Repeat submissions from the same email within the 10-minute window are rejected without duplicate inquiry rows.
 - [x] Public visitors cannot read inquiries or access administrative operations.
 - [x] Authorized staff can edit content and update inquiry status.
-- [ ] FAQ button flows, back/restart behavior, and fallback are tested.
-- [ ] No chatbot LLM credentials, API calls, or AI dependencies are present.
+- [x] Demo FAQ button flows (39 choices/11 menus), main-menu return, quote action, Escape/focus, mobile layout, and demo fallback are tested. The synthetic CMS publish/fallback flow was verified earlier; no business FAQ tree has been published.
+- [x] No chatbot LLM credentials, API calls, or AI dependencies are present.
 - [ ] Production secrets are configured outside source control.
-- [ ] Hosting, domain, Supabase access, backups, and handover responsibilities are confirmed.
+- [ ] Hosting, domain, Supabase access, backups/restore, monitoring, staff access, and handover responsibilities are confirmed.
 
 ## Risks and mitigations
 
