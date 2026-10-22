@@ -6,7 +6,7 @@ import SiteHeader from "@/components/site-header";
 import { getStaffSession } from "@/lib/staff-auth";
 
 export const metadata: Metadata = {
-  title: "Staff sign in | BrightNest Cleaning",
+  title: "Staff sign in | Crown Cleaning Solutions",
   robots: { index: false, follow: false },
 };
 

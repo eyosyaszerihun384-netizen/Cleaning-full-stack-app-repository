@@ -8,7 +8,7 @@ import { requireInquiryStaff } from "@/lib/staff-auth";
 import { z } from "zod";
 
 export const metadata: Metadata = {
-  title: "Inquiry details | BrightNest Cleaning",
+  title: "Inquiry details | Crown Cleaning Solutions",
   robots: { index: false, follow: false },
 };
 
@@ -73,7 +73,7 @@ export default async function InquiryDetailPage({
     <main id="main" className="admin-page">
       <header className="admin-header">
         <Link className="brand" href="/">
-          BrightNest <span className="brand-light">staff</span>
+          Crown Cleaning Solutions <span className="brand-light">staff</span>
         </Link>
         <div className="admin-user">
           <span>{user.email}</span>

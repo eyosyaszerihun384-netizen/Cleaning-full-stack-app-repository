@@ -45,7 +45,7 @@ const demoFaqTree: Record<string, FaqNode> = {
   home: {
     prompt: "What else about residential cleaning can I help with?",
     options: [
-      { label: "What is included?", answer: "The final checklist is not confirmed yet. Ask which rooms, tasks, and optional extras are included in your estimate.", next: "home" },
+      { label: "What is the difference between regular and deep cleaning?", answer: "Regular cleaning focuses on everyday upkeep, such as wiping surfaces, cleaning bathrooms, and vacuuming floors. Deep cleaning is more detailed and targets built-up dirt and areas that may not be included in a standard cleaning. We can help you choose the right service.", next: "home" },
       { label: "Can I request recurring visits?", answer: "You can share your preferred frequency with the team. Availability and schedules need to be confirmed.", next: "booking" },
       { label: "Request an estimate", answer: "Use the estimate request form to share a few details. This development project is for synthetic test data only.", action: "quote" },
     ],
@@ -61,7 +61,7 @@ const demoFaqTree: Record<string, FaqNode> = {
   deep: {
     prompt: "What would you like to know about a deep clean?",
     options: [
-      { label: "What areas are covered?", answer: "The deep-clean checklist has not been finalized. Confirm the included rooms, tasks, and any add-ons before booking.", next: "deep" },
+      { label: "How is deep cleaning different?", answer: "Deep cleaning is more detailed and targets built-up dirt and areas that may not be included in a standard cleaning. We can help you choose the right service.", next: "home" },
       { label: "How long does it take?", answer: "Timing depends on property size, condition, and requested tasks. The team can estimate this after learning more.", next: "pricing" },
       { label: "Can I request a quote?", answer: "You can use the estimate request form. This development project is for synthetic test data only.", action: "quote" },
     ],
@@ -94,8 +94,8 @@ const demoFaqTree: Record<string, FaqNode> = {
   area: {
     prompt: "How can I check whether service is available where I live?",
     options: [
-      { label: "Which cities do you serve?", answer: "The business city and service-area list have not been provided. No U.S. coverage is claimed in this demo.", next: "area" },
-      { label: "Can I check by ZIP code?", answer: "Yes. The planned estimate form will ask for a city or ZIP code so the business can confirm whether it is in range.", next: "booking" },
+      { label: "Which cities do you serve?", answer: "We serve customers in the Aurora and Denver, Colorado area. Please share your ZIP code so we can confirm whether your location is within our service area.", next: "area" },
+      { label: "Can I check by ZIP code?", answer: "Please share your ZIP code in an estimate request so the team can confirm whether your location is within our service area.", next: "booking" },
       { label: "Is the map available?", answer: "The map will be added after the service area is confirmed.", next: "area" },
     ],
   },
@@ -248,7 +248,7 @@ export default function FaqChat({
       <section className={`faq-chat${isOpen ? " is-open" : ""}`} id="faq-chat" aria-label="Frequently asked questions" aria-hidden={!isOpen} inert={!isOpen}>
         <div className="chat-header">
           <div className="chat-avatar" aria-hidden="true">✳</div>
-          <div><strong>BrightNest assistant</strong><small>Choose a question to get started</small></div>
+          <div><strong>Crown Cleaning assistant</strong><small>Choose a question to get started</small></div>
           <button className="chat-close" type="button" aria-label="Close FAQ" onClick={closeChat}>×</button>
         </div>
         <div className="chat-messages" ref={chatLog} aria-live="polite" aria-relevant="additions">

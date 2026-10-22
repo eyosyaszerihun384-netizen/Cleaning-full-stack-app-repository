@@ -5,16 +5,16 @@ import SiteHeader from "@/components/site-header";
 import { getPublicContactDetails } from "@/lib/site-content";
 
 export const metadata: Metadata = {
-  title: "Contact | BrightNest Cleaning",
+  title: "Contact | Crown Cleaning Solutions",
   description:
-    "Find the confirmed contact options for BrightNest Cleaning or learn how to request an estimate.",
+    "Contact Crown Cleaning Solutions or request an estimate for cleaning in Aurora or Denver.",
 };
 
 export default async function ContactPage() {
   const contact = await getPublicContactDetails();
 
   return (
-    <>
+    <div className="crown-site">
       <SiteHeader />
       <main id="main">
         <section className="page-hero section">
@@ -23,8 +23,9 @@ export default async function ContactPage() {
             <div className="eyebrow"><span className="eyebrow-dot" /> Get in touch</div>
             <h1>We’d be glad<br /><span>to hear from you.</span></h1>
             <p className="page-lead">
-              Reach out with questions about services or coverage. A request is
-              not a confirmed appointment; the business must follow up.
+              Ask about regular or deep cleaning, or share your ZIP code so the
+              team can confirm whether your location is within the Aurora and
+              Denver service area.
             </p>
           </div>
         </section>
@@ -76,6 +77,6 @@ export default async function ContactPage() {
         </section>
       </main>
       <SiteFooter />
-    </>
+    </div>
   );
 }

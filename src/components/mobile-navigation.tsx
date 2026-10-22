@@ -28,12 +28,13 @@ export default function MobileNavigation() {
         id="primary-nav"
         aria-label="Main navigation"
       >
-        <Link href="/services" onClick={closeMenu}>Services</Link>
-        <Link href="/#how-it-works" onClick={closeMenu}>How it works</Link>
-        <Link href="/about" onClick={closeMenu}>About us</Link>
-        <Link href="/contact" onClick={closeMenu}>Contact</Link>
+        <Link href="/services" onClick={closeMenu}>Solutions</Link>
+        <Link href="/#standard" onClick={closeMenu}>Our standard</Link>
+        <Link href="/#protocol" onClick={closeMenu}>Process</Link>
+        <Link href="/#pricing" onClick={closeMenu}>Pricing</Link>
+        <Link href="/about" onClick={closeMenu}>About</Link>
         <Link className="button button-small button-dark nav-cta" href="/#quote" onClick={closeMenu}>
-          Get a free estimate <span aria-hidden="true">↗</span>
+          Get a quote <span aria-hidden="true">↗</span>
         </Link>
       </nav>
     </>

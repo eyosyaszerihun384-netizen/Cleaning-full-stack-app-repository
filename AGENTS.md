@@ -4,11 +4,12 @@
 
 - Build the full-stack cleaning-services application with Next.js, TypeScript, and Supabase.
 - Treat `SYSTEM-DESIGN.md` as the implementation source of truth; use `PRD.md`, `PLAN.md`, and `Design.md` for product scope, delivery phases, and visual direction.
-- Preserve the approved BrightNest demo design for the MVP. Treat the more distinctive visual redesign as a post-MVP phase.
+- Use the client-approved Crown Cleaning Solutions navy-and-gold redesign for public pages; the earlier BrightNest design is historical and must not replace it.
 - Implement proposal services (residential, commercial, deep cleaning, and move-in) and clarify any scope ambiguity rather than inventing requirements.
 - Keep the chatbot within Option A: predefined, button-guided FAQ decision tree only. Do not add LLM or paid AI API integration.
 - Treat quote/booking submissions as inquiries that require staff follow-up, not confirmed appointments.
-- Do not publish unverified U.S. business details, service areas, prices, testimonials, or operating claims. Keep examples clearly marked as demo content until approved.
+- The approved service-area wording is Aurora and Denver, Colorado, with ZIP-code confirmation required. Regular/deep-cleaning descriptions are approved; keep prices, testimonials, credentials, detailed service promises, hours, and operating claims unpublished unless confirmed.
+- Clearly identify stock photos as illustrative and not Crown project work. Do not present stock imagery as before-and-after evidence; use real project photos only after approval and permission.
 
 ## Security and data handling
 

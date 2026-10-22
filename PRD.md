@@ -2,14 +2,14 @@
 
 ## Project
 
-**Working name:** U.S. Cleaning Services Website
+**Working name:** Crown Cleaning Solutions
 **Product:** Responsive cleaning-service website with an authenticated content-management area and an FAQ button chatbot
 **Status:** Initial requirements draft
 **Source:** *Web Development & Chatbot Integration Proposal*
 
 ## 1. Product summary
 
-Build a trustworthy, mobile-friendly website for a professional cleaning service operating in the United States. The specific city and state are not yet confirmed. Visitors can learn about the company's cleaning services, request an estimate or booking, and get immediate answers through a guided, button-based FAQ chatbot. Authorized staff can update site content and images and manage submitted inquiries.
+Build a trustworthy, mobile-friendly website for Crown Cleaning Solutions. The owner has confirmed Aurora and Denver, Colorado as the general service area, with ZIP-code confirmation required. Visitors can learn about cleaning services, request an estimate or booking, and get immediate answers through a guided, button-based FAQ chatbot. Authorized staff can update site content and images and manage submitted inquiries.
 
 The agreed chatbot scope is **Option A only**: a predefined decision tree with clickable choices and answers. The product will not include the proposal's Option B AI conversational chatbot.
 
@@ -48,7 +48,7 @@ Can sign in, manage approved website content and images, view and update inquiry
 - **Authorization:** Supabase Auth for staff sign-in; PostgreSQL Row Level Security (RLS) for protected data.
 - **Hosting:** To be selected. The proposal estimates annual domain and hosting charges; provider and deployment approach remain to be confirmed.
 - **Configuration:** Local secrets belong in ignored `.env.local`; share only placeholder names and values in `.env.example`.
-- **Initial localization assumption:** U.S.-oriented English copy and USD display; actual city/state, service area, business details, prices, and applicable policies must be supplied by the business before launch.
+- **Initial localization assumption:** U.S.-oriented English copy. Aurora and Denver, Colorado are owner-approved coverage wording, but ZIP codes and exact coverage boundaries still require confirmation. Prices, legal entity details, and applicable policies must be supplied by the business before launch.
 
 The implementation should use the Supabase public/publishable client key only in browser-safe configuration. Do not expose a Supabase service-role/secret key in client code or commit credentials.
 
@@ -58,7 +58,7 @@ The implementation should use the Supabase public/publishable client key only in
 
 Provide five agreed page templates/areas:
 
-1. **Home:** Hero, primary calls to action, service highlights, trust/stat highlights, and testimonials.
+1. **Home:** Hero and estimate CTA; services; service expectations; about/cleaning approach; illustrative gallery; inquiry process; genuine-review placeholder; pricing guidance; confirmed service area; estimate form; and the guided FAQ chatbot. Do not substitute fabricated reviews, statistics, or trust claims.
 2. **Services:** Service hub for residential, commercial, deep-cleaning, and move-in cleaning. Individual service detail routes may use a shared template.
 3. **About:** Company information, confirmed local service coverage, and an interactive map or map link.
 4. **Quote / booking request:** A clear, validated form for collecting customer inquiries.

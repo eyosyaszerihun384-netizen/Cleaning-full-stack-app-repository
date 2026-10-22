@@ -1,12 +1,12 @@
 # Development status
 
-**Last updated:** 2026-10-16
+**Last updated:** 2026-10-22
 **Project root:** Current Copilot chat workspace
-**Status:** Slices 1–6 are implemented. Slice 4 anonymous submission, public inquiry-read denial, staff follow-up/history, malformed-input and honeypot rejection, same-email 10-minute duplicate protection, concurrency handling, cooldown expiry, and failed-backend behavior are verified. Slice 5 role-specific access and no-staff sign-in denial are verified. Slice 6 CMS service, homepage, contact, service-area, image, and synthetic FAQ workflows have been verified.
+**Status:** Slices 1–6 are implemented. Slice 4 anonymous submission, public inquiry-read denial, staff follow-up/history, malformed-input and honeypot rejection, same-email 10-minute duplicate protection, concurrency handling, cooldown expiry, and failed-backend behavior are verified. Slice 5 role-specific access and no-staff sign-in denial are verified. Slice 6 CMS service, homepage, contact, service-area, image, and synthetic FAQ workflows have been verified. The Crown redesign is implemented; lint, type-check, tests, production build, production route smoke checks, and desktop/tablet/mobile browser checks passed.
 
 ## Resume here
 
-- **Repository:** `https://github.com/eyosyaszerihun384-netizen/Cleaning-full-stack-app-repository` (`main`). GitHub is synced through commit `4cf0f10` (`fix: honor published FAQ root navigation`).
+- **Repository:** `https://github.com/eyosyaszerihun384-netizen/Cleaning-full-stack-app-repository` (`main`). Check `git status` and `git log -1` to confirm the latest local and remote checkpoint before resuming.
 - **Working stack:** Next.js App Router, TypeScript, Supabase Auth/Postgres/Storage; guided button-based FAQ only (no AI/LLM).
 - **Run locally:** use Node.js and npm, provide `NEXT_PUBLIC_SUPABASE_URL` and `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` in a private `.env.local`, then run `npm install` and `npm run dev`. Do not copy credentials into GitHub, documentation, or chat. Current owner preview uses `http://localhost:3000`.
 - **Verified in the current development project:** Admin login/CMS access; service draft create/edit/delete and public draft invisibility; homepage copy persistence/display; contact settings persistence/display; service-area create/edit, publish/display, then deactivate/hide; image upload and replacement on a synthetic draft. Lint, type-check, production build, and public route smoke checks pass.
@@ -16,7 +16,9 @@
 
 ## Current checkpoint
 
-- Product choices: Next.js + TypeScript + Supabase; U.S.-oriented English; proposal services; Option A FAQ only; preserve the demo design for the MVP.
+- Product choices: Next.js + TypeScript + Supabase; U.S.-oriented English; proposal services; Option A FAQ only; current public design is the owner-approved Crown Cleaning Solutions navy/gold redesign. The BrightNest demo design is historical.
+- Owner-approved content supplied for Crown: regular/deep-cleaning explanation and Aurora/Denver, Colorado coverage with ZIP-code confirmation. Prices, testimonials, credentials, detailed service inclusions, hours, and operating claims are not approved for publication.
+- Current redesign includes all requested home-page content areas that can be represented without inventing facts. The customer-feedback area is a placeholder; stock-photo gallery imagery is explicitly illustrative and not Crown before-and-after evidence. Service-card images have an error fallback from CMS media to labeled stock imagery; service detail routes use the same fallback.
 - System blueprint: `SYSTEM-DESIGN.md`
 - Product requirements: `PRD.md`
 - Delivery plan: `PLAN.md`

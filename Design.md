@@ -1,8 +1,8 @@
-# BrightNest Cleaning — Design Concept
+# Crown Cleaning Solutions — Design Direction
 
 ## 1. Document purpose
 
-This document captures the visual and interaction concept for the BrightNest Cleaning single-page demo. It is intended to preserve the design direction for review and as a reference when the demo is later rebuilt as the full Next.js and Supabase product.
+This document records the current public-site design direction for Crown Cleaning Solutions. The earlier BrightNest sections below describe a historical static demo only and are not the design source of truth for the current Next.js application.
 
 The current implementation is a front-end concept only:
 
@@ -11,6 +11,18 @@ The current implementation is a front-end concept only:
 - `script.js` implements the mobile navigation, demo estimate form response, and predefined FAQ chat.
 
 Keep these files together to preserve the concept. Open `index.html` in a modern browser to view it locally. No build system is required. The Google Fonts import in the stylesheet uses an internet connection; system-font fallbacks are defined if the fonts cannot load.
+
+## Current Crown direction
+
+- **Brand:** Crown Cleaning Solutions.
+- **Visual system:** premium, restrained navy and gold, with high-contrast typography, editorial headings, square-edged controls, and responsive layouts.
+- **Design reference:** the client-provided responsive HTML mockup. Do not copy its unsupported prices, testimonials, statistics, credentials, guarantees, or third-party company imagery.
+- **Homepage content:** hero and estimate CTA; services; service expectations; cleaning approach/about; illustrative image gallery; inquiry process; a genuine-review placeholder; pricing guidance without invented prices; confirmed Aurora/Denver coverage; estimate form; and the existing guided FAQ chatbot. No separate FAQ section is needed.
+- **Trust and differentiation:** publish only confirmed facts. Until the client provides approved trust claims or differentiators, use practical service and inquiry guidance rather than invented badges, experience claims, or guarantees.
+- **Images:** Unsplash images are clearly labeled as illustrative stock, not Crown work. The gallery is not a before-and-after proof gallery; authentic Crown project photos can replace it only with owner approval and permission.
+- **Unconfirmed content:** exact prices, testimonials, credentials, business hours, detailed service inclusions, and service policies remain unpublished pending approval.
+
+The remaining BrightNest palette, typography, and page-structure sections are retained only to document the old static demo. They are not implementation requirements for the Crown app.
 
 ## 2. Design summary
 

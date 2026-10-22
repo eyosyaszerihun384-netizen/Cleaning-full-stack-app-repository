@@ -3,9 +3,11 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import SiteFooter from "@/components/site-footer";
 import SiteHeader from "@/components/site-header";
+import ServiceCardImage from "@/components/service-card-image";
 import {
   getPublishedService,
   getServiceImageUrl,
+  getStockServiceImageUrl,
   getStringList,
 } from "@/lib/services";
 
@@ -20,11 +22,11 @@ export async function generateMetadata({
   const service = await getPublishedService(slug);
 
   if (!service) {
-    return { title: "Service not found | BrightNest Cleaning" };
+    return { title: "Service not found | Crown Cleaning Solutions" };
   }
 
   return {
-    title: `${service.title} | BrightNest Cleaning`,
+    title: `${service.title} | Crown Cleaning Solutions`,
     description: service.summary,
   };
 }
@@ -41,7 +43,7 @@ export default async function ServiceDetailPage({ params }: ServicePageProps) {
   const exclusions = getStringList(service.exclusions);
 
   return (
-    <>
+    <div className="crown-site">
       <SiteHeader />
       <main id="main">
         <section className="page-hero section">
@@ -55,16 +57,13 @@ export default async function ServiceDetailPage({ params }: ServicePageProps) {
         <section className="section service-detail-section">
           <div className="container service-detail-grid">
             <article className="service-detail-copy">
-              {service.image_path && (
-                <div
-                  className="service-detail-photo"
-                  role="img"
-                  aria-label={service.image_alt ?? service.title}
-                  style={{
-                    backgroundImage: `url("${getServiceImageUrl(service.image_path)}")`,
-                  }}
-                />
-              )}
+              <ServiceCardImage
+                imageUrl={service.image_path ? getServiceImageUrl(service.image_path) : null}
+                stockImageUrl={getStockServiceImageUrl(service.category, 1200)}
+                title={service.title}
+                alt={service.image_alt}
+                className="service-detail-photo crown-service-image crown-detail-image"
+              />
               <h2>About this service</h2>
               <p>{service.description}</p>
               {inclusions.length > 0 && (
@@ -88,7 +87,7 @@ export default async function ServiceDetailPage({ params }: ServicePageProps) {
               <span className="eyebrow">Next step</span>
               <h2>Let’s talk about your space.</h2>
               <p>
-                Pricing and availability have not been confirmed in this demo.
+                Pricing and availability have not been provided for this page.
                 Send an estimate request to discuss your needs with the team.
               </p>
               {service.pricing_display && (
@@ -102,6 +101,6 @@ export default async function ServiceDetailPage({ params }: ServicePageProps) {
         </section>
       </main>
       <SiteFooter />
-    </>
+    </div>
   );
 }

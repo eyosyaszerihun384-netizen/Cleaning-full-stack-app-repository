@@ -14,7 +14,7 @@ import { getPublicContactDetails, getPublicHomeCopy } from "@/lib/site-content";
 import { requireContentStaff } from "@/lib/staff-auth";
 
 export const metadata: Metadata = {
-  title: "Site content | BrightNest Cleaning",
+  title: "Site content | Crown Cleaning Solutions",
   robots: { index: false, follow: false },
 };
 
@@ -66,7 +66,7 @@ export default async function ContentManagementPage({
     <main id="main" className="admin-page">
       <header className="admin-header">
         <Link className="brand" href="/">
-          BrightNest <span className="brand-light">staff</span>
+          Crown Cleaning Solutions <span className="brand-light">staff</span>
         </Link>
         <div className="admin-user">
           <span>{user.email} · {role.replace("_", " ")}</span>

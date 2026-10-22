@@ -3,20 +3,27 @@ import MobileNavigation from "@/components/mobile-navigation";
 
 export default function SiteHeader() {
   return (
-    <header className="site-header">
-      <div className="container nav-wrap">
-        <Link className="brand" href="/" aria-label="BrightNest Cleaning home">
-          <span className="brand-mark" aria-hidden="true">
-            <svg viewBox="0 0 40 40" fill="none">
-              <path d="M6 18.5 20 7l14 11.5v14H6v-14Z" fill="currentColor" />
-              <path d="M15 32.5V22h10v10.5" stroke="#fff" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" />
-              <path d="m29 7 .8 2.2L32 10l-2.2.8L29 13l-.8-2.2L26 10l2.2-.8L29 7Z" fill="#F5AE69" />
-            </svg>
-          </span>
-          <span>brightnest<span className="brand-light">cleaning</span></span>
-        </Link>
-        <MobileNavigation />
+    <>
+      <div className="crown-ticker">
+        <div className="container crown-ticker-inner">
+          <span>Cleaning services in Aurora and Denver, Colorado</span>
+          <Link href="/#quote">Request an estimate <span aria-hidden="true">↗</span></Link>
+        </div>
       </div>
-    </header>
+      <header className="site-header crown-header">
+        <div className="container nav-wrap">
+          <Link className="brand crown-brand" href="/" aria-label="Crown Cleaning Solutions home">
+            <span className="brand-mark" aria-hidden="true">
+              <svg viewBox="0 0 40 40" fill="none">
+                <path d="m5 12 9 7 6-13 6 13 9-7-3 20H8L5 12Z" fill="currentColor" />
+                <path d="M10 27h20" stroke="#0b1a30" strokeWidth="2" />
+              </svg>
+            </span>
+            <span>Crown <span className="brand-light">Cleaning Solutions</span></span>
+          </Link>
+          <MobileNavigation />
+        </div>
+      </header>
+    </>
   );
 }

@@ -1,8 +1,10 @@
 import Link from "next/link";
-import ServiceIcon, {
-  getServicePresentation,
-} from "@/components/service-icon";
-import { getServiceImageUrl, type PublishedService } from "@/lib/services";
+import {
+  getServiceImageUrl,
+  getStockServiceImageUrl,
+  type PublishedService,
+} from "@/lib/services";
+import ServiceCardImage from "@/components/service-card-image";
 
 export default function ServiceCard({
   service,
@@ -11,30 +13,22 @@ export default function ServiceCard({
   service: PublishedService;
   index: number;
 }) {
-  const presentation = getServicePresentation(service.category);
-
   return (
-    <article className={`service-card${index === 1 ? " featured-card" : ""}`}>
-      {service.image_path ? (
-        <div
-          className="service-photo"
-          role="img"
-          aria-label={service.image_alt ?? service.title}
-          style={{
-            backgroundImage: `url("${getServiceImageUrl(service.image_path)}")`,
-          }}
-        />
-      ) : (
-      <div className={`service-icon ${presentation.iconClass}`}>
-        <ServiceIcon category={service.category} />
+    <article className={`service-card crown-service-card${index === 1 ? " featured-card" : ""}`}>
+      <ServiceCardImage
+        imageUrl={service.image_path ? getServiceImageUrl(service.image_path) : null}
+        stockImageUrl={getStockServiceImageUrl(service.category, 1000)}
+        title={service.title}
+        alt={service.image_alt}
+      />
+      <div className="crown-service-content">
+        <span className="card-number">{String(index + 1).padStart(2, "0")}</span>
+        <h3>{service.title}</h3>
+        <p>{service.summary}</p>
+        <Link href={`/services/${service.slug}`} className="card-link">
+          View service details <span aria-hidden="true">↗</span>
+        </Link>
       </div>
-      )}
-      <span className="card-number">{String(index + 1).padStart(2, "0")}</span>
-      <h3>{service.title}</h3>
-      <p>{service.summary}</p>
-      <Link href={`/services/${service.slug}`} className="card-link">
-        View service details <span aria-hidden="true">↗</span>
-      </Link>
     </article>
   );
 }

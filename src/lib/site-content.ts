@@ -18,6 +18,13 @@ export type PublicHomeCopy = {
 };
 
 const defaultHomeCopy: PublicHomeCopy = {
+  eyebrow: "Serving Aurora and Denver, Colorado",
+  headline: "The right clean for your space.",
+  introduction:
+    "Regular cleaning focuses on everyday upkeep, such as wiping surfaces, cleaning bathrooms, and vacuuming floors. Deep cleaning is more detailed and targets built-up dirt and areas that may not be included in a standard cleaning. We can help you choose the right service.",
+};
+
+const legacyDemoHomeCopy: PublicHomeCopy = {
   eyebrow: "A little more breathing room",
   headline: "Come home to a brighter kind of clean.",
   introduction:
@@ -93,8 +100,17 @@ export async function getPublicHomeCopy(): Promise<PublicHomeCopy> {
   const introduction = getJsonString(data.value, "introduction");
 
   return {
-    eyebrow: eyebrow ?? defaultHomeCopy.eyebrow,
-    headline: headline ?? defaultHomeCopy.headline,
-    introduction: introduction ?? defaultHomeCopy.introduction,
+    eyebrow:
+      eyebrow === legacyDemoHomeCopy.eyebrow
+        ? defaultHomeCopy.eyebrow
+        : eyebrow ?? defaultHomeCopy.eyebrow,
+    headline:
+      headline === legacyDemoHomeCopy.headline
+        ? defaultHomeCopy.headline
+        : headline ?? defaultHomeCopy.headline,
+    introduction:
+      introduction === legacyDemoHomeCopy.introduction
+        ? defaultHomeCopy.introduction
+        : introduction ?? defaultHomeCopy.introduction,
   };
 }

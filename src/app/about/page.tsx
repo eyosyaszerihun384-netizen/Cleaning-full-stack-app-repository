@@ -5,41 +5,42 @@ import SiteHeader from "@/components/site-header";
 import { getActiveServiceAreas } from "@/lib/site-content";
 
 export const metadata: Metadata = {
-  title: "About Us | BrightNest Cleaning",
+  title: "About | Crown Cleaning Solutions",
   description:
-    "Learn about the BrightNest Cleaning concept and check the service areas currently published by the business.",
+    "Learn about regular and deep cleaning services in Aurora and Denver, Colorado.",
 };
 
 export default async function AboutPage() {
   const serviceAreas = await getActiveServiceAreas();
 
   return (
-    <>
+    <div className="crown-site">
       <SiteHeader />
       <main id="main">
-        <section className="page-hero section">
+        <section className="page-hero section crown-page-hero">
           <div className="container">
             <Link className="back-link" href="/">← Back to home</Link>
-            <div className="eyebrow"><span className="eyebrow-dot" /> About BrightNest</div>
-            <h1>A little more care<br /><span>in every clean.</span></h1>
+            <div className="eyebrow"><span className="eyebrow-dot" /> About Crown</div>
+            <h1>A clean that fits<br /><span>what you need.</span></h1>
             <p className="page-lead">
-              BrightNest is the working name for this cleaning-service website
-              demo. The business story and operating details will be added
-              after they are confirmed by the owner.
+              Crown Cleaning Solutions serves customers in the Aurora and
+              Denver, Colorado area. Share your ZIP code so the team can confirm
+              whether your location is within the service area.
             </p>
           </div>
         </section>
-        <section className="section about-page-section">
+        <section className="section about-page-section crown-about-section">
           <div className="container about-page-grid">
             <article className="about-story">
-              <div className="eyebrow">The idea</div>
-              <h2>More breathing room for the things that matter.</h2>
+              <div className="eyebrow">Regular and deep cleaning</div>
+              <h2>Everyday upkeep or a deeper clean.</h2>
               <p>
-                The site is designed to make it easy to explore cleaning
-                options, understand the next steps, and contact the team.
-                Service scope and availability are confirmed directly with the
-                business; this demo does not make promises on its behalf.
+                Regular cleaning focuses on everyday upkeep, such as wiping
+                surfaces, cleaning bathrooms, and vacuuming floors. Deep
+                cleaning is more detailed and targets built-up dirt and areas
+                that may not be included in a standard cleaning.
               </p>
+              <p>We can help you choose the right service.</p>
               <Link className="button button-outline" href="/services">
                 Explore services <span aria-hidden="true">↗</span>
               </Link>
@@ -47,9 +48,14 @@ export default async function AboutPage() {
             <aside className="service-area-panel" aria-labelledby="service-area-heading">
               <span className="eyebrow">Where we work</span>
               <h2 id="service-area-heading">Service areas</h2>
+              <p>
+                We serve customers in the Aurora and Denver, Colorado area.
+                Please share your ZIP code so we can confirm whether your
+                location is within our service area.
+              </p>
               {serviceAreas.length > 0 ? (
                 <>
-                  <p>These locations are currently listed by the business:</p>
+                  <p>Additional currently listed locations:</p>
                   <ul className="area-list">
                     {serviceAreas.map((area) => (
                       <li key={area.id}>
@@ -67,10 +73,7 @@ export default async function AboutPage() {
                   </ul>
                 </>
               ) : (
-                <p>
-                  Coverage has not been confirmed yet. No service areas are
-                  currently published.
-                </p>
+                <p>Contact the team with your ZIP code to check coverage.</p>
               )}
               <Link className="text-link" href="/contact">
                 Ask about your location <span aria-hidden="true">→</span>
@@ -80,6 +83,6 @@ export default async function AboutPage() {
         </section>
       </main>
       <SiteFooter />
-    </>
+    </div>
   );
 }

@@ -23,6 +23,20 @@ export function getServiceImageUrl(path: string): string {
   return `${url}/storage/v1/object/public/site-media/${safePath}`;
 }
 
+const stockImageIds = {
+  residential: "photo-1527515637462-cff94eecc1ac",
+  commercial: "photo-1504307651254-35680f356dfd",
+  deep: "photo-1581578731548-c64695cc6952",
+  move_in: "photo-1600210492486-724fe5c67fb0",
+} satisfies Record<PublishedService["category"], string>;
+
+export function getStockServiceImageUrl(
+  category: PublishedService["category"],
+  width: number,
+): string {
+  return `https://images.unsplash.com/${stockImageIds[category]}?auto=format&fit=crop&w=${width}&q=80`;
+}
+
 export async function getPublishedServices(): Promise<PublishedService[]> {
   const supabase = await createClient();
   const { data, error } = await supabase

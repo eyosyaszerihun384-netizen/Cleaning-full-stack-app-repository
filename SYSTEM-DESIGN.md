@@ -1,9 +1,9 @@
-# BrightNest Cleaning Website — System Design
+# Crown Cleaning Solutions Website — System Design
 
 **Status:** MVP implementation blueprint
 **Product:** U.S.-based cleaning service website, staff CMS, inquiry management, and Option A FAQ chatbot
 **Application stack:** Next.js + TypeScript + Supabase
-**Design baseline:** Existing BrightNest single-page demo and `Design.md`
+**Design baseline:** Client-approved Crown Cleaning Solutions redesign documented in `Design.md`
 **Source scope:** *Web Development & Chatbot Integration Proposal*
 **Last updated:** October 15, 2026
 
@@ -19,12 +19,12 @@ The implementation should proceed in small, demonstrable slices rather than atte
 
 - Build the full-stack application with **Next.js and Supabase**.
 - Use **English and U.S.-oriented presentation**, with prices represented in USD only after the business supplies approved U.S. pricing.
-- Carry the current demo's calm, warm BrightNest design concept into the MVP.
+- Use the owner-approved Crown Cleaning Solutions navy-and-gold redesign for public pages. The BrightNest design is historical.
 - Include the public website, quote/booking inquiry form, custom CMS, staff inquiry dashboard, media editing, and **Option A button-guided FAQ chatbot**.
 - Do **not** implement Option B, open-ended AI, an LLM, or a paid chatbot API.
 - Treat a form submission as an **inquiry/request for staff follow-up**, not a confirmed appointment.
 - Keep the current three-second chatbot thinking animation as a deliberate presentation effect. It is not model inference.
-- After the MVP works, plan a distinct UX refinement pass to reduce generic “vibe-coded” cues and make the visual system more specific to the real business. This is a design refinement, not a change to the core user flows.
+- Treat stock photography as illustrative only; do not represent it as Crown project work or before-and-after proof.
 
 ### Assumptions and open decisions
 
@@ -32,8 +32,8 @@ These defaults allow implementation to start, but should be replaced or explicit
 
 | Topic | Working assumption | Needs confirmation before launch |
 |---|---|---|
-| Business identity | BrightNest Cleaning is a demo/working name. | Legal/trading name, logo, approved brand assets. |
-| Location | United States; no city/state has been supplied. | Exact operating city/state, ZIP codes/neighborhoods, travel radius. |
+| Business identity | Crown Cleaning Solutions is the owner-approved brand name. | Confirm the legal entity name and approved logo/assets before legal or operational use. |
+| Location | Owner-approved coverage wording: Aurora and Denver, Colorado; confirm ZIP codes with each inquiry. | Exact ZIP codes/neighborhoods, travel radius, and any additional cities. |
 | Language | English. | Additional languages, if any. |
 | Currency | USD display where approved prices are shown. | Real pricing and whether it is fixed, “starting at,” per-room, or estimate-only. |
 | Public routes | Home, services hub, service detail templates, about, estimate request, contact. | Exact route/page count and final navigation. |
@@ -52,7 +52,7 @@ Do not invent real testimonials, certifications, customer counts, prices, respon
 
 The proposal calls for a responsive website with:
 
-- **Homepage:** dynamic hero, clear calls to action, highlights/stats, and customer testimonials.
+- **Homepage:** clear hero and inquiry CTA; services; service expectations; cleaning approach/about; illustrative gallery; inquiry process; genuine-review placeholder; pricing guidance; confirmed Aurora/Denver coverage; estimate form; and the existing guided FAQ chatbot. Do not show unsupported statistics, testimonials, prices, credentials, or trust claims.
 - **Services hub:** residential, commercial, deep cleaning, and move-in services.
 - **Quote and booking system:** custom, multi-step estimate request form.
 - **Company information:** About Us, Addis Ababa service coverage, interactive map, and contact points.

@@ -6,23 +6,23 @@ import SiteHeader from "@/components/site-header";
 import { getPublishedServices } from "@/lib/services";
 
 export const metadata: Metadata = {
-  title: "Cleaning Services | BrightNest Cleaning",
+  title: "Cleaning Services | Crown Cleaning Solutions",
   description:
-    "Explore BrightNest Cleaning's residential, commercial, deep, and move-in cleaning service options.",
+    "Explore cleaning services listed by Crown Cleaning Solutions.",
 };
 
 export default async function ServicesPage() {
   const services = await getPublishedServices();
 
   return (
-    <>
+    <div className="crown-site">
       <SiteHeader />
       <main id="main">
         <section className="page-hero section">
           <div className="container">
             <Link className="back-link" href="/">← Back to home</Link>
-            <div className="eyebrow"><span className="eyebrow-dot" /> Cleaning services</div>
-            <h1>Find the right clean<br /><span>for your space.</span></h1>
+            <div className="eyebrow"><span className="eyebrow-dot" /> Crown Cleaning Solutions</div>
+            <h1>Cleaning services<br /><span>for your space.</span></h1>
             <p className="page-lead">
               Explore the service options currently listed. Final scope and
               availability are confirmed with the business.
@@ -52,6 +52,6 @@ export default async function ServicesPage() {
         </section>
       </main>
       <SiteFooter />
-    </>
+    </div>
   );
 }

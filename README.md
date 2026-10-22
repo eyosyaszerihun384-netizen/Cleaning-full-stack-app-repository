@@ -7,13 +7,15 @@ Full-stack cleaning-services website built with Next.js, TypeScript, and Supabas
 - [System design](./SYSTEM-DESIGN.md) — architecture, data model, security, workflows, and implementation slices.
 - [Product requirements](./PRD.md) — agreed MVP behavior and decisions to confirm.
 - [Development plan](./PLAN.md) — phases, milestones, risks, and validation.
-- [Design concept](./Design.md) — the approved MVP visual direction and later refinement goals.
+- [Design concept](./Design.md) — current Crown design direction and historical BrightNest reference.
 - [Agent instructions](./AGENTS.md) — project-wide engineering and security conventions.
 - [Development status](./DEVELOPMENT-STATUS.md) — current checkpoint and next slice.
 
 ## Current status
 
 The Next.js App Router site reads published public content from Supabase and includes an inquiry form with server validation, anonymous insert/read-protection policies, a 10-minute same-email duplicate guard, and explicit save-failure handling. Anonymous submission, duplicate/concurrent request handling, and staff follow-up have been verified with synthetic data. Staff role separation and no-staff sign-in denial, plus CMS service/content, service-area, image, and FAQ workflows, have also been verified. Final launch QA and production setup remain. See [DEVELOPMENT-STATUS.md](./DEVELOPMENT-STATUS.md) for the verification record and current resume point. This is still a development preview, not production-ready.
+
+The public-site redesign now uses the owner-approved Crown Cleaning Solutions brand and navy/gold direction. Approved public copy includes regular/deep-cleaning guidance and Aurora/Denver coverage with ZIP-code confirmation. Stock imagery is illustrative, not Crown work; real testimonials, prices, credentials, and project photos remain subject to owner approval.
 
 The project concept and implementation decisions are captured in [PRD.md](./PRD.md), [PLAN.md](./PLAN.md), [SYSTEM-DESIGN.md](./SYSTEM-DESIGN.md), and [Design.md](./Design.md). Source repository: [Cleaning-full-stack-app-repository](https://github.com/eyosyaszerihun384-netizen/Cleaning-full-stack-app-repository). Keep `.env.local` and all real credentials local and ignored; GitHub contains only safe configuration templates.
 
